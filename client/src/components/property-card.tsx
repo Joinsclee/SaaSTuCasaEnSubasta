@@ -114,11 +114,6 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
           className="w-full h-48 object-cover"
         />
         
-        {/* Savings Badge - Green */}
-        <Badge className="absolute top-3 left-3 bg-green-500 text-white font-bold px-3 py-1 rounded-md">
-          💰 Ahorro: {formatPrice((parseFloat(property.originalPrice) - parseFloat(property.auctionPrice)).toString())}
-        </Badge>
-        
         
       </div>
       
