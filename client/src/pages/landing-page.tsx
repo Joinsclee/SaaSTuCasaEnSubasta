@@ -75,7 +75,7 @@ export default function LandingPage() {
               <Card className="transform hover:scale-105 transition-transform duration-300 bg-white/95 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-4 rounded-lg mb-4">
-                    <div className="text-3xl font-bold">70%</div>
+                    <div className="text-3xl font-bold">90%</div>
                     <div className="text-sm opacity-90">Descuento Máximo</div>
                   </div>
                   <h3 className="font-bold text-lg mb-2 text-gray-900">Casa en Miami, FL</h3>
