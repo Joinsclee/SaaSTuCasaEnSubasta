@@ -100,9 +100,7 @@ export default function AuthPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Crear Cuenta</CardTitle>
-                  <CardDescription>
-                    Regístrate para acceder a propiedades con descuentos hasta 70%
-                  </CardDescription>
+                  <CardDescription>Regístrate para acceder a propiedades con descuentos hasta 90%</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleRegister} className="space-y-4">
@@ -175,7 +173,6 @@ export default function AuthPage() {
           </div>
         </div>
       </div>
-
       {/* Right side - Hero */}
       <div className="hidden lg:flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 text-white p-8">
         <div className="max-w-md space-y-6 text-center">
