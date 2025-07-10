@@ -16,7 +16,7 @@ interface PropertyFiltersProps {
 export default function PropertyFilters({ onFiltersChange, isLoading }: PropertyFiltersProps) {
   const [filters, setFilters] = useState({
     location: "",
-    state: "",
+    state: "all",
     priceMin: "",
     priceMax: "",
     propertyTypes: [] as string[],
@@ -46,6 +46,7 @@ export default function PropertyFilters({ onFiltersChange, isLoading }: Property
   const applyFilters = () => {
     const appliedFilters = {
       ...filters,
+      state: filters.state === "all" ? undefined : filters.state,
       priceMin: filters.priceMin ? parseInt(filters.priceMin) : undefined,
       priceMax: filters.priceMax ? parseInt(filters.priceMax) : undefined,
       minDiscount: filters.minDiscount[0],
@@ -58,7 +59,7 @@ export default function PropertyFilters({ onFiltersChange, isLoading }: Property
   const clearFilters = () => {
     const clearedFilters = {
       location: "",
-      state: "",
+      state: "all",
       priceMin: "",
       priceMax: "",
       propertyTypes: [],
@@ -118,7 +119,7 @@ export default function PropertyFilters({ onFiltersChange, isLoading }: Property
               <SelectValue placeholder="Todos los estados" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos los estados</SelectItem>
+              <SelectItem value="all">Todos los estados</SelectItem>
               {states.map((state) => (
                 <SelectItem key={state.value} value={state.value}>
                   {state.label}

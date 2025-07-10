@@ -23,7 +23,7 @@ export default function AuthPage() {
 
   // Redirect if already authenticated
   if (user) {
-    setLocation("/dashboard");
+    setTimeout(() => setLocation("/dashboard"), 0);
     return null;
   }
 

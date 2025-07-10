@@ -38,6 +38,9 @@ export function registerRoutes(app: Express): Server {
   app.get("/api/properties/:id", async (req, res, next) => {
     try {
       const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "ID de propiedad inválido" });
+      }
       const property = await storage.getProperty(id);
       
       if (!property) {
@@ -94,6 +97,9 @@ export function registerRoutes(app: Express): Server {
 
     try {
       const propertyId = parseInt(req.params.propertyId);
+      if (isNaN(propertyId)) {
+        return res.status(400).json({ message: "ID de propiedad inválido" });
+      }
       await storage.unsaveProperty(req.user!.id, propertyId);
       res.sendStatus(200);
     } catch (error) {
