@@ -146,12 +146,14 @@ export default function AuthPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Teléfono</Label>
+                      <Label htmlFor="phone">Teléfono *</Label>
                       <Input
                         id="phone"
                         type="tel"
                         value={registerData.phone}
                         onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
+                        required
+                        placeholder="Ej: 1234567890"
                       />
                     </div>
                     <Button 

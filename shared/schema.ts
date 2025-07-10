@@ -9,7 +9,7 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
-  phone: text("phone"),
+  phone: text("phone").notNull(),
   subscriptionType: text("subscription_type").notNull().default("free"),
   subscriptionExpiresAt: timestamp("subscription_expires_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -79,7 +79,11 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
   fullName: true,
   email: true,
-  phone: true,
+}).extend({
+  phone: z.string({
+    required_error: "El teléfono es requerido",
+    invalid_type_error: "El teléfono debe ser un texto"
+  }).min(1, "El teléfono es requerido").min(10, "El teléfono debe tener al menos 10 dígitos"),
 });
 
 export const insertPropertySchema = createInsertSchema(properties).omit({

@@ -60,6 +60,13 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
+      // Check if phone is provided first
+      if (!req.body.phone) {
+        return res.status(400).json({ 
+          message: "El teléfono es requerido" 
+        });
+      }
+
       // Validate request body
       const validationResult = insertUserSchema.safeParse(req.body);
       if (!validationResult.success) {
