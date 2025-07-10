@@ -145,7 +145,7 @@ export default function AuthPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Teléfono (Opcional)</Label>
+                      <Label htmlFor="phone">Teléfono</Label>
                       <Input
                         id="phone"
                         type="tel"
