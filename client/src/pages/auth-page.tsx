@@ -189,16 +189,7 @@ export default function AuthPage() {
             <div className="text-4xl font-bold text-yellow-300 mb-2">1,247</div>
             <div className="text-sm">Propiedades Disponibles</div>
           </div>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="bg-white/10 rounded p-3">
-              <div className="font-bold">Miami, FL</div>
-              <div className="text-blue-200">desde $89,500</div>
-            </div>
-            <div className="bg-white/10 rounded p-3">
-              <div className="font-bold">Austin, TX</div>
-              <div className="text-blue-200">desde $165,000</div>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>
