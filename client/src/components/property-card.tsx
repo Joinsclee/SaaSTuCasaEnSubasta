@@ -146,6 +146,11 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
           {renderStars()}
         </div>
         
+        {/* Auction Type Badge */}
+        <Badge className={`absolute bottom-3 left-3 text-white font-medium px-3 py-1 text-xs ${getAuctionTypeColor(property.auctionType)}`}>
+          {getAuctionTypeLabel(property.auctionType)}
+        </Badge>
+        
       </div>
       
       <CardContent className="p-4">
