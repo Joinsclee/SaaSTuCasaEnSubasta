@@ -14,6 +14,7 @@ export default function AuthPage() {
   const [, setLocation] = useLocation();
   const [loginData, setLoginData] = useState({ username: "", password: "" });
   const [registerData, setRegisterData] = useState({
+    username: "",
     password: "",
     fullName: "",
     email: "",
@@ -103,6 +104,16 @@ export default function AuthPage() {
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleRegister} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="regUsername">Usuario</Label>
+                      <Input
+                        id="regUsername"
+                        type="text"
+                        value={registerData.username}
+                        onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
+                        required
+                      />
+                    </div>
                     <div className="space-y-2">
                       <Label htmlFor="fullName">Nombre Completo</Label>
                       <Input
