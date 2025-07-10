@@ -14,7 +14,6 @@ export default function AuthPage() {
   const [, setLocation] = useLocation();
   const [loginData, setLoginData] = useState({ username: "", password: "" });
   const [registerData, setRegisterData] = useState({
-    username: "",
     password: "",
     fullName: "",
     email: "",
@@ -124,16 +123,7 @@ export default function AuthPage() {
                         required
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="regUsername">Usuario</Label>
-                      <Input
-                        id="regUsername"
-                        type="text"
-                        value={registerData.username}
-                        onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
-                        required
-                      />
-                    </div>
+                    
                     <div className="space-y-2">
                       <Label htmlFor="regPassword">Contraseña</Label>
                       <Input
