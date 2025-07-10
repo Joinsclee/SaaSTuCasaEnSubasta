@@ -33,7 +33,6 @@ export default function LandingPage() {
           </div>
         </div>
       </header>
-
       {/* Hero Section with Branding Image */}
       <section className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white overflow-hidden">
         <div className="absolute inset-0">
@@ -50,7 +49,7 @@ export default function LandingPage() {
             <div className="z-10">
               <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                 Encuentra tu Casa Ideal con
-                <span className="text-primary block">Descuentos hasta 70%</span>
+                <span className="text-primary block">Descuentos hasta 90%</span>
               </h1>
               <p className="text-xl mb-8 text-gray-200 leading-relaxed">
                 Accede a propiedades exclusivas en subasta en Estados Unidos. 
@@ -94,7 +93,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
       {/* Features Section */}
       <section className="bg-white py-20">
         <div className="container mx-auto px-4">
@@ -146,7 +144,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
       {/* Professional Team Section */}
       <section className="bg-gray-50 py-20">
         <div className="container mx-auto px-4">
@@ -188,7 +185,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
       {/* CTA Section */}
       <section className="bg-primary/5 py-20">
         <div className="container mx-auto px-4 text-center">
