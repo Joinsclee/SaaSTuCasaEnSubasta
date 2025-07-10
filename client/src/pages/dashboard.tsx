@@ -18,7 +18,7 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
 
   const { data: properties = [], isLoading, error } = useQuery<Property[]>({
-    queryKey: ["/api/properties", { ...filters, sortBy, limit: 12 }],
+    queryKey: ["/api/properties", filters, sortBy, 12],
   });
 
   const handleFiltersChange = (newFilters: any) => {
