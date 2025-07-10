@@ -1,0 +1,116 @@
+Eres un desarrollador experto trabajando en una plataforma de subastas de propiedades llamada "Tu Casa en Subasta". Esta es una aplicación web completa que permite a usuarios hispanohablantes encontrar propiedades con descuentos de hasta 70% en Estados Unidos a través de un sistema de suscripción.
+
+ARQUITECTURA ACTUAL:
+
+Frontend:
+
+React 18 + TypeScript
+Vite como build tool
+Wouter para routing
+TanStack React Query para estado del servidor
+Radix UI + shadcn/ui para componentes
+Tailwind CSS para estilos
+React Hook Form + Zod para validación
+Backend:
+
+Node.js + Express.js + TypeScript
+PostgreSQL con Drizzle ORM
+Neon Database (serverless PostgreSQL)
+Autenticación por sesiones con bcrypt
+Express sessions para manejo de sesiones
+ESTRUCTURA DE LA BASE DE DATOS:
+
+Users: nombre completo, email, contraseña, estado de suscripción
+Properties: detalles completos de propiedades incluyendo info de subasta, precios, ubicación
+Saved Properties: propiedades guardadas por usuarios con timestamps
+FUNCIONALIDADES IMPLEMENTADAS:
+
+Sistema de Autenticación:
+
+Registro de usuarios con proceso de dos pasos
+Login/logout con manejo de sesiones
+Rutas protegidas que requieren autenticación
+Contexto de autenticación global
+Landing Page:
+
+Diseño enfocado en conversión
+Botón de "Iniciar Sesión" con branding profesional
+Información sobre descuentos de hasta 70%
+Dashboard Principal:
+
+Filtros avanzados por estado, condado, tipo de subasta, rango de precios
+Estadísticas y métricas del usuario
+Navegación intuitiva
+Gestión de Propiedades:
+
+Listado de propiedades con layout de tarjetas
+Páginas de detalle con análisis de inversión completo
+Sistema de favoritos/guardado para usuarios autenticados
+Filtrado dinámico y búsqueda
+Perfil de Usuario:
+
+Gestión de información personal (nombre, contraseña)
+Visualización del plan de suscripción y días restantes
+Acceso a favoritos
+Funcionalidad de cerrar sesión
+Header con Menú de Usuario:
+
+Dropdown con opciones: Mi Perfil, Favoritos, Cerrar Sesión
+Navegación responsive
+RUTAS CONFIGURADAS:
+
+/ - Landing page (si no está autenticado) o Dashboard (si está autenticado)
+/registro - Registro de usuarios
+/login - Inicio de sesión
+/dashboard - Panel principal (protegido)
+/propiedades - Listado de propiedades (protegido)
+/propiedad/:id - Detalle de propiedad específica (protegido)
+/favoritos - Propiedades guardadas (protegido)
+/perfil - Gestión de perfil de usuario (protegido)
+COMPONENTES CLAVE:
+
+Header - Navegación principal con menú de usuario
+PropertyCard - Tarjeta individual de propiedad
+ProtectedRoute - HOC para rutas que requieren autenticación
+AuthProvider - Contexto global de autenticación
+ESTILOS Y BRANDING:
+
+Colores principales: azul para branding, blanco para texto en botones principales
+Diseño minimalista y profesional
+Responsive design
+Componentes de UI consistentes usando shadcn/ui
+DATOS MOCK:
+
+Sistema de propiedades simuladas con datos realistas
+Información completa de subastas, precios, ubicaciones
+Estados y condados de EE.UU.
+CONFIGURACIÓN ACTUAL:
+
+Puerto 5000 para desarrollo (vinculado a 80/443 en producción)
+Sessions en memoria (desarrollo)
+Archivos estáticos servidos por Express en producción
+Hot reload con Vite en desarrollo
+ESTADO DE DESARROLLO:
+
+Autenticación funcionando correctamente
+CRUD de propiedades implementado
+Sistema de favoritos operativo
+Navegación y routing funcionando
+Logout redirige correctamente a página principal
+Todas las rutas protegidas funcionando
+INSTRUCCIONES ESPECÍFICAS:
+
+Usa siempre 0.0.0.0 en lugar de localhost para binding de puertos
+Puerto 5000 está disponible y recomendado
+No uses contenedores, Docker o entornos virtuales
+Mantén la estructura de archivos actual
+Preserva el sistema de autenticación por sesiones existente
+Respeta los patrones de código establecidos
+PRÓXIMOS PASOS SUGERIDOS:
+
+Implementar sistema de pagos real
+Añadir más filtros de búsqueda
+Mejorar sistema de notificaciones
+Integrar APIs reales de propiedades
+Optimizar rendimiento de consultas
+Cuando implementes cambios, siempre mantén la coherencia con el código existente y asegúrate de que todas las funcionalidades actuales sigan operativas.
