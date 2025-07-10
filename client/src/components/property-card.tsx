@@ -119,18 +119,7 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
           💰 Ahorro: {formatPrice((parseFloat(property.originalPrice) - parseFloat(property.auctionPrice)).toString())}
         </Badge>
         
-        {/* View Details Button */}
-        <Button
-          variant="secondary"
-          size="sm"
-          className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white px-4 py-1 text-xs rounded-md"
-          onClick={(e) => {
-            e.stopPropagation();
-            onViewDetails(property);
-          }}
-        >
-          👁 Ver detalles
-        </Button>
+        
       </div>
       
       <CardContent className="p-4">
