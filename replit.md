@@ -2,7 +2,7 @@
 
 ## Overview
 
-Tu Casa en Subasta is a comprehensive web application for property auctions targeting Spanish-speaking users. The platform allows users to discover properties at auction with discounts up to 70%, featuring advanced filtering, investment analysis, and user management capabilities.
+Tu Casa en Subasta is a comprehensive web application for property auctions targeting Spanish-speaking users. The platform allows users to discover properties at auction with discounts up to 90%, featuring advanced filtering, investment analysis, and user management capabilities. The platform now features a professional landing page as the main entry point, showcasing Kevin as the expert property evaluator.
 
 ## User Preferences
 
@@ -101,3 +101,34 @@ Preferred language: Spanish - Always communicate in Spanish with the user.
 - TypeScript with path mapping for clean imports
 
 The architecture emphasizes type safety, performance, and scalability while maintaining a clear separation between frontend and backend concerns. The use of modern tools like Drizzle ORM, TanStack Query, and Vite ensures efficient development and optimal runtime performance.
+
+## Recent Changes (July 10, 2025)
+
+### Landing Page as Main Entry Point
+- **Route Configuration**: Changed `/` to display LandingPage instead of Dashboard
+- **User Experience**: Landing page now serves as the primary entry point for all users
+- **Authentication Flow**: Users see landing page first, then can navigate to auth or dashboard
+- **Dynamic Header**: Shows "Ir al Dashboard" for authenticated users, "Iniciar Sesión" for guests
+
+### Orange Branding Implementation
+- **Color Scheme**: Updated primary color from blue to orange (HSL: 22, 100%, 65%)
+- **Brand Image**: Integrated professional Kevin image as hero background and team section
+- **Visual Consistency**: All UI elements (buttons, icons, badges) now use orange branding
+
+### Kevin Expert Profile
+- **New Page**: Created `/kevin` route with dedicated expert profile page
+- **Content Strategy**: Positioned Kevin as the property evaluation expert behind star ratings
+- **Professional Credibility**: Showcases 15+ years experience and 2,500+ evaluated properties
+- **Navigation**: "Conoce a Kevin" button links from landing page to expert profile
+
+### Property Features Enhancement
+- **Star Rating System**: Kevin's expert evaluations displayed as 1-5 star ratings
+- **Favorites System**: Heart icon toggle for saving/removing properties from favorites
+- **Auction Type Badges**: Color-coded badges (foreclosure=blue, bankruptcy=purple, tax=green)
+- **Visual Hierarchy**: Improved card layout with proper spacing for all elements
+
+### Technical Improvements
+- **Form Validation**: Enhanced Spanish error messages for registration
+- **Required Fields**: Made phone number mandatory with proper validation
+- **Database Constraints**: Proper handling of unique username/email validation
+- **Error Handling**: Comprehensive error states with user-friendly Spanish messages

@@ -19,14 +19,13 @@ import NotFound from "@/pages/not-found";
 function Router() {
   return (
     <Switch>
-      <ProtectedRoute path="/" component={Dashboard} />
+      <Route path="/" component={LandingPage} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/propiedades" component={Properties} />
       <ProtectedRoute path="/propiedad/:id" component={PropertyDetail} />
       <ProtectedRoute path="/favoritos" component={Favorites} />
       <ProtectedRoute path="/perfil" component={Profile} />
       <Route path="/auth" component={AuthPage} />
-      <Route path="/landing" component={LandingPage} />
       <Route path="/kevin" component={KevinExpertPage} />
       <Route component={NotFound} />
     </Switch>

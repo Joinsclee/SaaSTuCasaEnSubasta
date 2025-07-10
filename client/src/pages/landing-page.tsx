@@ -9,11 +9,8 @@ export default function LandingPage() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
 
-  // Redirect authenticated users to dashboard
-  if (user) {
-    setLocation("/dashboard");
-    return null;
-  }
+  // Redirect authenticated users to dashboard when they click login or access protected routes
+  // But let them see the landing page to logout or learn more
 
   return (
     <div className="min-h-screen">
@@ -25,11 +22,19 @@ export default function LandingPage() {
               <Home className="h-8 w-8 text-primary" />
               <span className="text-2xl font-bold text-gray-900">Tu Casa en Subasta</span>
             </div>
-            <Link href="/auth">
-              <Button variant="default" size="lg">
-                Iniciar Sesión
-              </Button>
-            </Link>
+            {user ? (
+              <Link href="/dashboard">
+                <Button variant="default" size="lg">
+                  Ir al Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/auth">
+                <Button variant="default" size="lg">
+                  Iniciar Sesión
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </header>
