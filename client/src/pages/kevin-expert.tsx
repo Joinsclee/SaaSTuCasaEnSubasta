@@ -101,18 +101,7 @@ export default function KevinExpertPage() {
                 </CardContent>
               </Card>
 
-              <Card className="text-center">
-                <CardContent className="p-8">
-                  <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Users className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Asesoría Personalizada</h3>
-                  <p className="text-gray-600">
-                    Kevin y su equipo están disponibles para brindar asesoría personalizada 
-                    y guiar a nuestros usuarios en sus decisiones de inversión.
-                  </p>
-                </CardContent>
-              </Card>
+              
             </div>
 
             {/* Call to Action */}
