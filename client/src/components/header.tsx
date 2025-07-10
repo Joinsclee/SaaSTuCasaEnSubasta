@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, Menu, User, Heart, Settings, LogOut, Crown } from "lucide-react";
+import { Home, Menu, User, Heart, LogOut, Crown } from "lucide-react";
 
 export default function Header() {
   const { user, logoutMutation } = useAuth();
@@ -109,10 +109,7 @@ export default function Header() {
                       Favoritos
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configuración
-                  </DropdownMenuItem>
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     onClick={handleLogout}
