@@ -1,6 +1,6 @@
 import { users, properties, savedProperties, type User, type InsertUser, type Property, type InsertProperty, type SavedProperty, type InsertSavedProperty } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, asc, gte, lte, ilike, or, inArray } from "drizzle-orm";
+import { eq, and, desc, asc, gte, lte, ilike, or, inArray, sql } from "drizzle-orm";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import { pool } from "./db";
@@ -17,6 +17,7 @@ export interface IStorage {
   getProperties(filters?: PropertyFilters): Promise<Property[]>;
   getProperty(id: number): Promise<Property | undefined>;
   createProperty(property: InsertProperty): Promise<Property>;
+  getCountiesByState(state: string): Promise<Array<{ county: string; propertiesCount: number }>>;
   
   getSavedProperties(userId: number): Promise<Array<SavedProperty & { property: Property }>>;
   saveProperty(userId: number, propertyId: number): Promise<SavedProperty>;
@@ -28,6 +29,7 @@ export interface IStorage {
 
 export interface PropertyFilters {
   state?: string;
+  county?: string;
   city?: string;
   priceMin?: number;
   priceMax?: number;
@@ -40,6 +42,7 @@ export interface PropertyFilters {
   sortOrder?: 'asc' | 'desc';
   limit?: number;
   offset?: number;
+  propertyId?: number;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -92,8 +95,16 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(properties.state, filters.state));
     }
 
+    if (filters.county) {
+      conditions.push(eq(properties.county, filters.county));
+    }
+
     if (filters.city) {
       conditions.push(ilike(properties.city, `%${filters.city}%`));
+    }
+
+    if (filters.propertyId) {
+      conditions.push(eq(properties.id, filters.propertyId));
     }
 
     if (filters.priceMin) {
@@ -169,6 +180,20 @@ export class DatabaseStorage implements IStorage {
       .values(insertProperty)
       .returning();
     return property;
+  }
+
+  async getCountiesByState(state: string): Promise<Array<{ county: string; propertiesCount: number }>> {
+    const result = await db
+      .select({
+        county: properties.county,
+        propertiesCount: sql<number>`count(*)::int`
+      })
+      .from(properties)
+      .where(eq(properties.state, state))
+      .groupBy(properties.county)
+      .orderBy(properties.county);
+
+    return result;
   }
 
   async getSavedProperties(userId: number): Promise<Array<SavedProperty & { property: Property }>> {

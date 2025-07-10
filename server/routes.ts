@@ -9,12 +9,25 @@ export function registerRoutes(app: Express): Server {
   // Setup authentication routes
   setupAuth(app);
 
+  // Counties route - get counties by state
+  app.get("/api/counties/:state", async (req, res, next) => {
+    try {
+      const state = req.params.state;
+      const counties = await storage.getCountiesByState(state);
+      res.json(counties);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   // Property routes
   app.get("/api/properties", async (req, res, next) => {
     try {
       const filters = {
         state: req.query.state as string,
+        county: req.query.county as string,
         city: req.query.city as string,
+        propertyId: req.query.propertyId ? parseInt(req.query.propertyId as string) : undefined,
         priceMin: req.query.priceMin ? parseInt(req.query.priceMin as string) : undefined,
         priceMax: req.query.priceMax ? parseInt(req.query.priceMax as string) : undefined,
         propertyTypes: req.query.propertyTypes ? (req.query.propertyTypes as string).split(',') : undefined,
