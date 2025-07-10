@@ -104,7 +104,7 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
 
   return (
     <Card 
-      className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+      className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer bg-white rounded-lg"
       onClick={() => onViewDetails(property)}
     >
       <div className="relative">
@@ -114,93 +114,81 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
           className="w-full h-48 object-cover"
         />
         
-        {/* Discount Badge */}
-        <Badge className="absolute top-3 left-3 bg-red-500 text-white font-bold px-3 py-1">
-          -{property.discount}%
+        {/* Savings Badge - Green */}
+        <Badge className="absolute top-3 left-3 bg-green-500 text-white font-bold px-3 py-1 rounded-md">
+          💰 Ahorro: {formatPrice((parseFloat(property.originalPrice) - parseFloat(property.auctionPrice)).toString())}
         </Badge>
         
-        {/* Auction Type Badge */}
-        <Badge className={`absolute top-3 right-3 text-white px-3 py-1 text-xs ${getAuctionTypeColor(property.auctionType)}`}>
-          {getAuctionTypeLabel(property.auctionType)}
-        </Badge>
-        
-        {/* Favorite Button */}
+        {/* View Details Button */}
         <Button
           variant="secondary"
           size="sm"
-          className="absolute bottom-3 right-3 h-10 w-10 rounded-full p-0 shadow-md"
-          onClick={handleToggleFavorite}
-          disabled={toggleFavoriteMutation.isPending}
+          className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white px-4 py-1 text-xs rounded-md"
+          onClick={(e) => {
+            e.stopPropagation();
+            onViewDetails(property);
+          }}
         >
-          <Heart className={`h-4 w-4 ${isSaved ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
+          👁 Ver detalles
         </Button>
       </div>
       
-      <CardContent className="p-5">
-        {/* Location */}
-        <div className="flex items-center text-sm text-gray-600 mb-2">
-          <MapPin className="h-4 w-4 mr-1" />
-          <span>{property.city}, {property.state} {property.zipCode}</span>
+      <CardContent className="p-4">
+        {/* Address Title */}
+        <h3 className="text-lg font-bold text-gray-900 mb-1">
+          {property.address}
+        </h3>
+        
+        {/* Location with icon */}
+        <div className="flex items-center text-sm text-gray-600 mb-3">
+          <MapPin className="h-4 w-4 mr-1 text-orange-500" />
+          <span>{property.city}, {property.state}, FL</span>
         </div>
         
-        {/* Price Information */}
+        {/* Property characteristics in one line */}
+        <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+          <span>{property.bedrooms} habitaciones</span>
+          <span>{property.bathrooms} baños</span>
+          <span>{property.sqft.toLocaleString()}sq ft</span>
+        </div>
+        
+        {/* Current Price */}
+        <div className="mb-1">
+          <span className="text-2xl font-bold text-gray-900">
+            ${parseInt(property.auctionPrice).toLocaleString()}
+          </span>
+        </div>
+        
+        {/* Estimated Value */}
         <div className="mb-3">
-          <div className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-gray-900">
-              {formatPrice(property.auctionPrice)}
-            </span>
-            <span className="text-lg text-gray-500 line-through">
-              {formatPrice(property.originalPrice)}
-            </span>
-          </div>
-          <p className="text-sm text-green-600 font-medium">
-            Ahorras {formatPrice((parseFloat(property.originalPrice) - parseFloat(property.auctionPrice)).toString())}
-          </p>
+          <span className="text-sm text-gray-600">
+            Valor estimado: {formatPrice(property.marketValue)}
+          </span>
         </div>
         
-        {/* Property Details */}
-        <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
-          {property.bedrooms && (
-            <div className="flex items-center">
-              <Bed className="h-4 w-4 mr-1" />
-              <span>{property.bedrooms}</span>
-            </div>
-          )}
-          {property.bathrooms && (
-            <div className="flex items-center">
-              <Bath className="h-4 w-4 mr-1" />
-              <span>{property.bathrooms}</span>
-            </div>
-          )}
-          {property.sqft && (
-            <div className="flex items-center">
-              <Square className="h-4 w-4 mr-1" />
-              <span>{property.sqft.toLocaleString()} sqft</span>
-            </div>
-          )}
+        {/* Auction Date with calendar icon */}
+        <div className="flex items-center text-sm text-gray-600 mb-3">
+          <Calendar className="h-4 w-4 mr-1 text-orange-500" />
+          <span>{formatDate(property.auctionDate)}</span>
         </div>
         
-        {/* Auction Information */}
-        <div className="border-t border-gray-200 pt-3">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-xs text-gray-600">Fecha de Subasta</p>
-              <p className="text-sm font-medium text-gray-900 flex items-center">
-                <Calendar className="h-3 w-3 mr-1" />
-                {formatDate(property.auctionDate)}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-gray-600">Tiempo Restante</p>
-              <p className={`text-sm font-medium flex items-center justify-end ${
-                daysUntilAuction <= 7 ? "text-orange-600" : "text-green-600"
-              }`}>
-                <Clock className="h-3 w-3 mr-1" />
-                {daysUntilAuction > 0 ? `${daysUntilAuction} días` : "Finalizada"}
-              </p>
-            </div>
-          </div>
-        </div>
+        {/* Description */}
+        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          {property.propertyType === 'casa' ? 'Casa Unifamiliar' : 
+           property.propertyType === 'condominio' ? 'Condominio' : 
+           property.propertyType === 'townhouse' ? 'Casa Adosada' : property.propertyType} en {property.city}, {property.state}. Construida en {property.yearBuilt}, con {property.bedrooms} habitaciones y {property.bathrooms} baños. Condición: {property.condition}.
+        </p>
+        
+        {/* View Complete Property Button - Orange */}
+        <Button 
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 rounded-md"
+          onClick={(e) => {
+            e.stopPropagation();
+            onViewDetails(property);
+          }}
+        >
+          Ver Propiedad Completa
+        </Button>
       </CardContent>
     </Card>
   );
