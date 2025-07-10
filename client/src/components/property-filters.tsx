@@ -43,7 +43,7 @@ export default function PropertyFilters({ onFiltersChange, isLoading }: Property
 
   // Fetch properties when county changes
   const { data: properties = [] } = useQuery<Property[]>({
-    queryKey: ["/api/properties", { state: selectedState !== "all" ? selectedState : undefined, county: selectedCounty !== "all" ? selectedCounty : undefined }],
+    queryKey: ["/api/properties", selectedState, selectedCounty],
     enabled: selectedState !== "all" && selectedCounty !== "all",
   });
 

@@ -20,7 +20,7 @@ export default function Properties() {
   const offset = (currentPage - 1) * itemsPerPage;
 
   const { data: properties = [], isLoading, error } = useQuery<Property[]>({
-    queryKey: ["/api/properties", { ...filters, sortBy, limit: itemsPerPage, offset }],
+    queryKey: ["/api/properties", filters, sortBy, itemsPerPage, offset],
   });
 
   const handleFiltersChange = (newFilters: any) => {
