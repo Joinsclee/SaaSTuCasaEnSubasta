@@ -167,9 +167,9 @@ export default function LandingPage() {
                   <div className="text-gray-600">Inversores satisfechos</div>
                 </div>
               </div>
-              <Link href="/auth">
+              <Link href="/kevin">
                 <Button size="lg" className="px-8">
-                  Conoce Nuestro Equipo
+                  Conoce a Kevin
                 </Button>
               </Link>
             </div>
