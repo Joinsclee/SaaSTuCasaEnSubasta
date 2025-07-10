@@ -141,13 +141,30 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
           className="w-full h-48 object-cover"
         />
         
+        {/* Favorite Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-3 left-3 h-8 w-8 bg-white/80 hover:bg-white/90 rounded-full shadow-sm"
+          onClick={handleToggleFavorite}
+          disabled={toggleFavoriteMutation.isPending}
+        >
+          <Heart 
+            className={`h-4 w-4 ${
+              isSaved 
+                ? 'text-red-500 fill-red-500' 
+                : 'text-gray-600'
+            }`}
+          />
+        </Button>
+
         {/* Stars Rating - Opportunity Score */}
         <div className="absolute top-3 right-3">
           {renderStars()}
         </div>
         
         {/* Auction Type Badge */}
-        <Badge className={`absolute bottom-3 left-3 text-white font-medium px-3 py-1 text-xs ${getAuctionTypeColor(property.auctionType)}`}>
+        <Badge className={`absolute bottom-3 right-3 text-white font-medium px-3 py-1 text-xs ${getAuctionTypeColor(property.auctionType)}`}>
           {getAuctionTypeLabel(property.auctionType)}
         </Badge>
         
