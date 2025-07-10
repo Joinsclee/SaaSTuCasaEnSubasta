@@ -147,6 +147,48 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Professional Team Section */}
+      <section className="bg-gray-50 py-20">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                Respaldados por Expertos en Bienes Raíces
+              </h2>
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                Nuestro equipo de profesionales en bienes raíces te acompaña en cada paso del proceso de inversión. 
+                Con años de experiencia en el mercado de subastas inmobiliarias, te ayudamos a identificar las mejores oportunidades 
+                y tomar decisiones informadas que maximicen tu retorno de inversión.
+              </p>
+              <div className="grid grid-cols-2 gap-6 mb-8">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-2">15+</div>
+                  <div className="text-gray-600">Años de experiencia</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-2">2,500+</div>
+                  <div className="text-gray-600">Inversores satisfechos</div>
+                </div>
+              </div>
+              <Link href="/auth">
+                <Button size="lg" className="px-8">
+                  Conoce Nuestro Equipo
+                </Button>
+              </Link>
+            </div>
+            <div className="relative">
+              <div className="rounded-lg overflow-hidden shadow-xl">
+                <img 
+                  src={brandingImage} 
+                  alt="Equipo profesional de Tu Casa en Subasta" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="bg-primary/5 py-20">
         <div className="container mx-auto px-4 text-center">
