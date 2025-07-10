@@ -142,7 +142,7 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
         />
         
         {/* Stars Rating - Opportunity Score */}
-        <div className="absolute top-3 right-3 bg-black/70 rounded-md px-2 py-1">
+        <div className="absolute top-3 right-3">
           {renderStars()}
         </div>
         
