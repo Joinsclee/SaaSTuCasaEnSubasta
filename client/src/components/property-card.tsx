@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { MapPin, Bed, Bath, Square, Heart, Calendar, Clock } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Calendar, Clock, Star } from "lucide-react";
 import { Property } from "@shared/schema";
 
 interface PropertyCardProps {
@@ -72,6 +72,33 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
     return diffDays;
   };
 
+  // Función para generar estrellas al azar basado en el ID de la propiedad
+  const getOpportunityStars = () => {
+    // Usamos el ID de la propiedad como semilla para tener consistencia
+    const seed = property.id;
+    // Generamos un número entre 1 y 5 basado en el ID
+    const stars = ((seed * 9301 + 49297) % 233280) % 5 + 1;
+    return stars;
+  };
+
+  const renderStars = () => {
+    const stars = getOpportunityStars();
+    return (
+      <div className="flex items-center">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`h-4 w-4 ${
+              star <= stars 
+                ? 'text-yellow-400 fill-yellow-400' 
+                : 'text-gray-300'
+            }`}
+          />
+        ))}
+      </div>
+    );
+  };
+
   const getAuctionTypeColor = (type: string) => {
     switch (type) {
       case 'ejecucion':
@@ -114,6 +141,10 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
           className="w-full h-48 object-cover"
         />
         
+        {/* Stars Rating - Opportunity Score */}
+        <div className="absolute top-3 right-3 bg-black/70 rounded-md px-2 py-1">
+          {renderStars()}
+        </div>
         
       </div>
       
