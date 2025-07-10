@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home, Search, TrendingUp, Headphones } from "lucide-react";
+import brandingImage from "@assets/77ac89ee4c464f16aa9189f5fcaa5bb77a5ac9fb6a514a00ac2579ac502f97df-md_1752164521536.png";
 
 export default function LandingPage() {
   const { user } = useAuth();
@@ -15,63 +16,81 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary to-primary/80">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Home className="h-8 w-8 text-white" />
-            <span className="text-2xl font-bold text-white">Tu Casa en Subasta</span>
+      <header className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Home className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold text-gray-900">Tu Casa en Subasta</span>
+            </div>
+            <Link href="/auth">
+              <Button variant="default" size="lg">
+                Iniciar Sesión
+              </Button>
+            </Link>
           </div>
-          <Link href="/auth">
-            <Button variant="secondary" size="lg">
-              Iniciar Sesión
-            </Button>
-          </Link>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Encuentra tu Casa Ideal con
-              <span className="text-yellow-300 block">Descuentos hasta 70%</span>
-            </h1>
-            <p className="text-xl mb-8 text-blue-100">
-              Accede a propiedades exclusivas en subasta en Estados Unidos. 
-              Invierte inteligentemente con nuestro análisis profesional.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/auth">
-                <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-                  Comenzar Ahora
+      {/* Hero Section with Branding Image */}
+      <section className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src={brandingImage} 
+            alt="Tu Casa en Subasta - Profesional Inmobiliario" 
+            className="w-full h-full object-cover opacity-90"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50"></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="z-10">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Encuentra tu Casa Ideal con
+                <span className="text-primary block">Descuentos hasta 70%</span>
+              </h1>
+              <p className="text-xl mb-8 text-gray-200 leading-relaxed">
+                Accede a propiedades exclusivas en subasta en Estados Unidos. 
+                Invierte inteligentemente con nuestro análisis profesional.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/auth">
+                  <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 text-lg">
+                    Comenzar Ahora
+                  </Button>
+                </Link>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 text-lg"
+                >
+                  Ver Demo
                 </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-primary">
-                Ver Demo
-              </Button>
+              </div>
             </div>
-          </div>
-          <div className="relative">
-            <Card className="transform rotate-3 hover:rotate-0 transition-transform duration-300">
-              <CardContent className="p-6">
-                <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-4 rounded-lg mb-4">
-                  <div className="text-3xl font-bold">70%</div>
-                  <div className="text-sm">Descuento Máximo</div>
-                </div>
-                <h3 className="font-bold text-lg mb-2">Casa en Miami, FL</h3>
-                <p className="text-gray-600 mb-4">3 hab • 2 baños • 1,850 sqft</p>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-2xl font-bold text-primary">$89,500</div>
-                    <div className="text-sm text-gray-500 line-through">$235,000</div>
+            
+            <div className="relative z-10">
+              <Card className="transform hover:scale-105 transition-transform duration-300 bg-white/95 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-4 rounded-lg mb-4">
+                    <div className="text-3xl font-bold">70%</div>
+                    <div className="text-sm opacity-90">Descuento Máximo</div>
                   </div>
-                  <div className="text-green-600 font-bold">Ahorras $145,500</div>
-                </div>
-              </CardContent>
-            </Card>
+                  <h3 className="font-bold text-lg mb-2 text-gray-900">Casa en Miami, FL</h3>
+                  <p className="text-gray-600 mb-4">3 hab • 2 baños • 1,850 sqft</p>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-2xl font-bold text-primary">$89,500</div>
+                      <div className="text-sm text-gray-500 line-through">$235,000</div>
+                    </div>
+                    <div className="text-green-600 font-bold">Ahorras $145,500</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
@@ -103,8 +122,8 @@ export default function LandingPage() {
 
             <Card>
               <CardContent className="p-8 text-center">
-                <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <TrendingUp className="h-8 w-8 text-green-600" />
+                <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <TrendingUp className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Análisis de Inversión</h3>
                 <p className="text-gray-600">
@@ -115,8 +134,8 @@ export default function LandingPage() {
 
             <Card>
               <CardContent className="p-8 text-center">
-                <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Headphones className="h-8 w-8 text-orange-600" />
+                <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Headphones className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Soporte Experto</h3>
                 <p className="text-gray-600">
