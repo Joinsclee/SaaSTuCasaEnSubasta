@@ -7,6 +7,7 @@ Tu Casa en Subasta is a comprehensive web application for property auctions targ
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Preferred language: Spanish - Always communicate in Spanish with the user.
 
 ## System Architecture
 
