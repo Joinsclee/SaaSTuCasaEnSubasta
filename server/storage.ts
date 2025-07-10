@@ -23,7 +23,7 @@ export interface IStorage {
   unsaveProperty(userId: number, propertyId: number): Promise<void>;
   isPropertySaved(userId: number, propertyId: number): Promise<boolean>;
   
-  sessionStore: session.SessionStore;
+  sessionStore: any;
 }
 
 export interface PropertyFilters {
@@ -43,7 +43,7 @@ export interface PropertyFilters {
 }
 
 export class DatabaseStorage implements IStorage {
-  sessionStore: session.SessionStore;
+  sessionStore: any;
 
   constructor() {
     this.sessionStore = new PostgresSessionStore({ 
