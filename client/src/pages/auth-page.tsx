@@ -182,9 +182,7 @@ export default function AuthPage() {
           <h2 className="text-3xl font-bold">
             Propiedades con Descuentos Increíbles
           </h2>
-          <p className="text-lg text-blue-100">
-            Accede a miles de propiedades en subasta en Estados Unidos con descuentos de hasta 70% de su valor de mercado.
-          </p>
+          <p className="text-lg text-blue-100">Accede a miles de propiedades en subasta en Estados Unidos con descuentos de hasta 90% de su valor de mercado.</p>
           <div className="bg-white/10 rounded-lg p-6">
             <div className="text-4xl font-bold text-yellow-300 mb-2">1,247</div>
             <div className="text-sm">Propiedades Disponibles</div>
