@@ -138,19 +138,19 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
         <img
           src={mainImage}
           alt={`Propiedad en ${property.city}, ${property.state}`}
-          className="w-full h-48 object-cover"
+          className="w-full h-40 sm:h-48 object-cover"
         />
         
         {/* Favorite Button */}
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-3 left-3 h-8 w-8 bg-white/80 hover:bg-white/90 rounded-full shadow-sm"
+          className="absolute top-2 sm:top-3 left-2 sm:left-3 h-7 w-7 sm:h-8 sm:w-8 bg-white/80 hover:bg-white/90 rounded-full shadow-sm"
           onClick={handleToggleFavorite}
           disabled={toggleFavoriteMutation.isPending}
         >
           <Heart 
-            className={`h-4 w-4 ${
+            className={`h-3 w-3 sm:h-4 sm:w-4 ${
               isSaved 
                 ? 'text-red-500 fill-red-500' 
                 : 'text-gray-600'
@@ -159,46 +159,47 @@ export default function PropertyCard({ property, onViewDetails }: PropertyCardPr
         </Button>
 
         {/* Stars Rating - Opportunity Score */}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
           {renderStars()}
         </div>
         
         {/* Auction Type Badge */}
-        <Badge className={`absolute bottom-3 right-3 text-white font-medium px-3 py-1 text-xs ${getAuctionTypeColor(property.auctionType)}`}>
+        <Badge className={`absolute bottom-2 sm:bottom-3 right-2 sm:right-3 text-white font-medium px-2 sm:px-3 py-1 text-xs ${getAuctionTypeColor(property.auctionType)}`}>
           {getAuctionTypeLabel(property.auctionType)}
         </Badge>
         
       </div>
       
-      <CardContent className="p-4">
+      <CardContent className="p-3 sm:p-4">
         {/* Address Title */}
-        <h3 className="text-lg font-bold text-gray-900 mb-1">
+        <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 truncate">
           {property.address}
         </h3>
         
         {/* Location with icon */}
-        <div className="flex items-center text-sm text-gray-600 mb-3">
-          <MapPin className="h-4 w-4 mr-1 text-orange-500" />
-          <span>{property.city}, {property.state}, FL</span>
+        <div className="flex items-center text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+          <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-orange-500 flex-shrink-0" />
+          <span className="truncate">{property.city}, {property.state}, FL</span>
         </div>
         
-        {/* Property characteristics in one line */}
-        <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
-          <span>{property.bedrooms} habitaciones</span>
+        {/* Property characteristics - responsive layout */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+          <span>{property.bedrooms} hab</span>
           <span>{property.bathrooms} baños</span>
-          <span>{property.sqft.toLocaleString()}sq ft</span>
+          <span className="hidden sm:inline">{property.sqft.toLocaleString()} sq ft</span>
+          <span className="sm:hidden">{Math.round(property.sqft/1000)}k sq ft</span>
         </div>
         
         {/* Current Price */}
         <div className="mb-1">
-          <span className="text-2xl font-bold text-gray-900">
+          <span className="text-xl sm:text-2xl font-bold text-gray-900">
             ${parseInt(property.auctionPrice).toLocaleString()}
           </span>
         </div>
         
         {/* Estimated Value */}
-        <div className="mb-3">
-          <span className="text-sm text-gray-600">
+        <div className="mb-2 sm:mb-3">
+          <span className="text-xs sm:text-sm text-gray-600">
             Valor estimado: {formatPrice(property.marketValue)}
           </span>
         </div>

@@ -38,21 +38,21 @@ export default function Properties() {
   };
 
   const PropertyGridSkeleton = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 sm:gap-6">
       {[...Array(12)].map((_, i) => (
         <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <Skeleton className="w-full h-48" />
-          <div className="p-5 space-y-3">
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-8 w-24" />
-            <div className="flex space-x-4">
-              <Skeleton className="h-4 w-12" />
-              <Skeleton className="h-4 w-12" />
-              <Skeleton className="h-4 w-16" />
+          <Skeleton className="w-full h-40 sm:h-48" />
+          <div className="p-3 sm:p-5 space-y-2 sm:space-y-3">
+            <Skeleton className="h-3 sm:h-4 w-28 sm:w-32" />
+            <Skeleton className="h-6 sm:h-8 w-20 sm:w-24" />
+            <div className="flex space-x-2 sm:space-x-4">
+              <Skeleton className="h-3 sm:h-4 w-10 sm:w-12" />
+              <Skeleton className="h-3 sm:h-4 w-10 sm:w-12" />
+              <Skeleton className="h-3 sm:h-4 w-12 sm:w-16" />
             </div>
             <div className="flex justify-between">
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-3 sm:h-4 w-16 sm:w-20" />
+              <Skeleton className="h-3 sm:h-4 w-12 sm:w-16" />
             </div>
           </div>
         </div>
@@ -64,10 +64,10 @@ export default function Properties() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 order-2 lg:order-1">
             <PropertyFilters 
               onFiltersChange={handleFiltersChange}
               isLoading={isLoading}
@@ -77,21 +77,21 @@ export default function Properties() {
           {/* Properties Grid */}
           <div className="lg:col-span-3">
             {/* Results Header */}
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-              <h1 className="text-3xl font-bold text-gray-900">
+            <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 order-1 lg:order-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 Todas las Propiedades
                 {!isLoading && (
-                  <span className="text-lg font-normal text-gray-600 block sm:inline sm:ml-2">
+                  <span className="text-base sm:text-lg font-normal text-gray-600 block sm:inline sm:ml-2">
                     Página {currentPage} de resultados
                   </span>
                 )}
               </h1>
               
               {/* Sort Options */}
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 <label className="text-sm font-medium text-gray-700">Ordenar por:</label>
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-full sm:w-48">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -122,7 +122,7 @@ export default function Properties() {
               <>
                 {properties.length > 0 ? (
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 sm:gap-6">
                       {properties.map((property) => (
                         <PropertyCard
                           key={property.id}

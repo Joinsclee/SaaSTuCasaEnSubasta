@@ -49,48 +49,48 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50"></div>
         </div>
         
-        <div className="relative container mx-auto px-4 py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="z-10">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+        <div className="relative container mx-auto px-4 py-12 sm:py-16 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="z-10 text-center lg:text-left">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
                 Encuentra tu Casa Ideal con
                 <span className="text-primary block">Descuentos hasta 90%</span>
               </h1>
-              <p className="text-xl mb-8 text-gray-200 leading-relaxed">
+              <p className="text-lg sm:text-xl mb-6 sm:mb-8 text-gray-200 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 Accede a propiedades exclusivas en subasta en Estados Unidos. 
                 Invierte inteligentemente con nuestro análisis profesional.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/auth">
-                  <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 text-lg">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
+                <Link href="/auth" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg">
                     Comenzar Ahora
                   </Button>
                 </Link>
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 text-lg"
+                  className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-gray-900 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg"
                 >
                   Ver Demo
                 </Button>
               </div>
             </div>
             
-            <div className="relative z-10">
-              <Card className="transform hover:scale-105 transition-transform duration-300 bg-white/95 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-4 rounded-lg mb-4">
-                    <div className="text-3xl font-bold">90%</div>
-                    <div className="text-sm opacity-90">Descuento Máximo</div>
+            <div className="relative z-10 mt-8 lg:mt-0">
+              <Card className="transform hover:scale-105 transition-transform duration-300 bg-white/95 backdrop-blur-sm max-w-md mx-auto lg:max-w-none">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-3 sm:p-4 rounded-lg mb-3 sm:mb-4">
+                    <div className="text-2xl sm:text-3xl font-bold">90%</div>
+                    <div className="text-xs sm:text-sm opacity-90">Descuento Máximo</div>
                   </div>
-                  <h3 className="font-bold text-lg mb-2 text-gray-900">Casa en Miami, FL</h3>
-                  <p className="text-gray-600 mb-4">3 hab • 2 baños • 1,850 sqft</p>
-                  <div className="flex justify-between items-center">
+                  <h3 className="font-bold text-base sm:text-lg mb-2 text-gray-900">Casa en Miami, FL</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">3 hab • 2 baños • 1,850 sqft</p>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
                     <div>
-                      <div className="text-2xl font-bold text-primary">$89,500</div>
-                      <div className="text-sm text-gray-500 line-through">$235,000</div>
+                      <div className="text-xl sm:text-2xl font-bold text-primary">$89,500</div>
+                      <div className="text-xs sm:text-sm text-gray-500 line-through">$235,000</div>
                     </div>
-                    <div className="text-green-600 font-bold">Ahorras $145,500</div>
+                    <div className="text-green-600 font-bold text-sm sm:text-base">Ahorras $145,500</div>
                   </div>
                 </CardContent>
               </Card>
@@ -150,40 +150,40 @@ export default function LandingPage() {
         </div>
       </section>
       {/* Professional Team Section */}
-      <section className="bg-gray-50 py-20">
+      <section className="bg-gray-50 py-12 sm:py-16 lg:py-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="text-center lg:text-left order-2 lg:order-1">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
                 Respaldados por Expertos en Bienes Raíces
               </h2>
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 Nuestro equipo de profesionales en bienes raíces te acompaña en cada paso del proceso de inversión. 
                 Con años de experiencia en el mercado de subastas inmobiliarias, te ayudamos a identificar las mejores oportunidades 
                 y tomar decisiones informadas que maximicen tu retorno de inversión.
               </p>
-              <div className="grid grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8 max-w-md mx-auto lg:max-w-none">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-2">15+</div>
-                  <div className="text-gray-600">Años de experiencia</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-primary mb-1 sm:mb-2">15+</div>
+                  <div className="text-sm sm:text-base text-gray-600">Años de experiencia</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-2">2,500+</div>
-                  <div className="text-gray-600">Inversores satisfechos</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-primary mb-1 sm:mb-2">2,500+</div>
+                  <div className="text-sm sm:text-base text-gray-600">Inversores satisfechos</div>
                 </div>
               </div>
-              <Link href="/kevin">
-                <Button size="lg" className="px-8">
+              <Link href="/kevin" className="inline-block w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto px-6 sm:px-8">
                   Conoce a Kevin
                 </Button>
               </Link>
             </div>
-            <div className="relative">
-              <div className="rounded-lg overflow-hidden shadow-xl">
+            <div className="relative order-1 lg:order-2">
+              <div className="rounded-lg overflow-hidden shadow-xl max-w-md mx-auto lg:max-w-none">
                 <img 
                   src={brandingImage} 
                   alt="Equipo profesional de Tu Casa en Subasta" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-64 sm:h-80 lg:h-full object-cover"
                 />
               </div>
             </div>

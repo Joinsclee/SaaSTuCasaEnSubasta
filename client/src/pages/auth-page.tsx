@@ -40,12 +40,12 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* Left side - Forms */}
-      <div className="flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-6">
+      <div className="flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className="w-full max-w-md space-y-4 sm:space-y-6">
           {/* Logo */}
-          <div className="flex items-center justify-center space-x-2 mb-8">
-            <Home className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold text-gray-900">Tu Casa en Subasta</span>
+          <div className="flex items-center justify-center space-x-2 mb-6 sm:mb-8">
+            <Home className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+            <span className="text-xl sm:text-2xl font-bold text-gray-900">Tu Casa en Subasta</span>
           </div>
 
           <Tabs defaultValue="login" className="w-full">

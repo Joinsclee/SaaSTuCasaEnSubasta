@@ -10,16 +10,17 @@ export default function KevinExpertPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <Link href="/">
-              <Button variant="ghost" className="flex items-center space-x-2">
-                <ArrowLeft className="h-4 w-4" />
-                <span>Volver al Inicio</span>
+              <Button variant="ghost" className="flex items-center space-x-1 sm:space-x-2 text-sm sm:text-base">
+                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Volver al Inicio</span>
+                <span className="sm:hidden">Volver</span>
               </Button>
             </Link>
             <Link href="/auth">
-              <Button variant="default" size="lg">
+              <Button variant="default" size="sm" className="sm:size-lg text-sm sm:text-base">
                 Iniciar Sesión
               </Button>
             </Link>
@@ -28,46 +29,46 @@ export default function KevinExpertPage() {
       </header>
 
       {/* Kevin Expert Profile */}
-      <section className="py-20">
+      <section className="py-12 sm:py-16 lg:py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             {/* Hero Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-              <div>
-                <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-12 sm:mb-16">
+              <div className="text-center lg:text-left order-2 lg:order-1">
+                <Badge className="mb-3 sm:mb-4 bg-primary/10 text-primary border-primary/20 text-xs sm:text-sm">
                   Experto Principal
                 </Badge>
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
                   Conoce a Kevin
                 </h1>
-                <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                   Experto en bienes raíces con más de 15 años de experiencia en el mercado de subastas inmobiliarias. 
                   Kevin es quien evalúa cada propiedad en nuestra plataforma y determina las oportunidades de compra 
                   que ves representadas en las estrellas de calificación.
                 </p>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-4 sm:gap-6 max-w-sm mx-auto lg:max-w-none">
                   <div className="text-center">
-                    <div className="flex items-center justify-center mb-2">
-                      <Award className="h-6 w-6 text-primary mr-2" />
-                      <span className="text-2xl font-bold text-gray-900">15+</span>
+                    <div className="flex items-center justify-center mb-1 sm:mb-2">
+                      <Award className="h-4 w-4 sm:h-6 sm:w-6 text-primary mr-1 sm:mr-2" />
+                      <span className="text-xl sm:text-2xl font-bold text-gray-900">15+</span>
                     </div>
-                    <div className="text-gray-600">Años de experiencia</div>
+                    <div className="text-sm sm:text-base text-gray-600">Años de experiencia</div>
                   </div>
                   <div className="text-center">
-                    <div className="flex items-center justify-center mb-2">
-                      <TrendingUp className="h-6 w-6 text-primary mr-2" />
-                      <span className="text-2xl font-bold text-gray-900">2,500+</span>
+                    <div className="flex items-center justify-center mb-1 sm:mb-2">
+                      <TrendingUp className="h-4 w-4 sm:h-6 sm:w-6 text-primary mr-1 sm:mr-2" />
+                      <span className="text-xl sm:text-2xl font-bold text-gray-900">2,500+</span>
                     </div>
-                    <div className="text-gray-600">Propiedades evaluadas</div>
+                    <div className="text-sm sm:text-base text-gray-600">Propiedades evaluadas</div>
                   </div>
                 </div>
               </div>
-              <div className="relative">
-                <div className="rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative order-1 lg:order-2">
+                <div className="rounded-2xl overflow-hidden shadow-2xl max-w-md mx-auto lg:max-w-none">
                   <img 
                     src={brandingImage} 
                     alt="Kevin - Experto en Bienes Raíces de Tu Casa en Subasta" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-64 sm:h-80 lg:h-full object-cover"
                   />
                 </div>
               </div>
