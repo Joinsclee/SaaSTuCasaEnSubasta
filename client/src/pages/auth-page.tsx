@@ -170,7 +170,7 @@ export default function AuthPage() {
           </Tabs>
 
           <div className="text-center">
-            <Link href="/landing" className="text-sm text-gray-600 hover:text-primary">
+            <Link href="/" className="text-sm text-gray-600 hover:text-primary">
               ¿Necesitas más información? Ver página principal
             </Link>
           </div>
