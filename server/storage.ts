@@ -24,6 +24,11 @@ export interface IStorage {
   unsaveProperty(userId: number, propertyId: number): Promise<void>;
   isPropertySaved(userId: number, propertyId: number): Promise<boolean>;
   
+  // Admin functions
+  getAdminStats(): Promise<{ totalUsers: number; totalProperties: number; adminUsers: number; regularUsers: number }>;
+  getAllUsers(): Promise<User[]>;
+  updateUserRole(userId: number, role: string): Promise<User | undefined>;
+  
   sessionStore: any;
 }
 
@@ -236,6 +241,43 @@ export class DatabaseStorage implements IStorage {
         eq(savedProperties.propertyId, propertyId)
       ));
     return !!saved;
+  }
+
+  // Admin functions
+  async getAdminStats(): Promise<{ totalUsers: number; totalProperties: number; adminUsers: number; regularUsers: number }> {
+    const [userStats] = await db
+      .select({
+        totalUsers: sql<number>`count(*)::int`,
+        adminUsers: sql<number>`count(case when role = 'admin' then 1 end)::int`,
+        regularUsers: sql<number>`count(case when role = 'user' then 1 end)::int`
+      })
+      .from(users);
+
+    const [propertyStats] = await db
+      .select({
+        totalProperties: sql<number>`count(*)::int`
+      })
+      .from(properties);
+
+    return {
+      totalUsers: userStats.totalUsers,
+      adminUsers: userStats.adminUsers,
+      regularUsers: userStats.regularUsers,
+      totalProperties: propertyStats.totalProperties
+    };
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async updateUserRole(userId: number, role: string): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ role })
+      .where(eq(users.id, userId))
+      .returning();
+    return updatedUser || undefined;
   }
 }
 

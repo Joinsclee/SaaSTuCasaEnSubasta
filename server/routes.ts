@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
+import { requireAdmin, requireAuth } from "./middleware/adminAuth";
 import { z } from "zod";
 import { insertPropertySchema } from "@shared/schema";
 
@@ -165,6 +166,59 @@ export function registerRoutes(app: Express): Server {
       });
       
       res.json(updatedUser);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Admin routes (protected)
+  app.get("/api/admin/stats", requireAdmin, async (req, res, next) => {
+    try {
+      const stats = await storage.getAdminStats();
+      res.json(stats);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/admin/users", requireAdmin, async (req, res, next) => {
+    try {
+      const users = await storage.getAllUsers();
+      // Remove password field for security
+      const safeUsers = users.map(({ password, ...user }) => user);
+      res.json(safeUsers);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/admin/users/:id/role", requireAdmin, async (req, res, next) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { role } = req.body;
+
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "ID de usuario inválido" });
+      }
+
+      if (!['user', 'admin'].includes(role)) {
+        return res.status(400).json({ message: "Rol inválido. Debe ser 'user' o 'admin'" });
+      }
+
+      // Prevent admin from removing their own admin role
+      if (userId === req.user!.id && role !== 'admin') {
+        return res.status(400).json({ message: "No puedes cambiar tu propio rol de administrador" });
+      }
+
+      const updatedUser = await storage.updateUserRole(userId, role);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+
+      // Remove password field for security
+      const { password, ...safeUser } = updatedUser;
+      res.json(safeUser);
     } catch (error) {
       next(error);
     }

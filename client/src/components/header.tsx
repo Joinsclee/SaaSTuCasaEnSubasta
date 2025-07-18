@@ -12,10 +12,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, Menu, User, Heart, LogOut, Crown } from "lucide-react";
+import { Home, Menu, User, Heart, LogOut, Crown, Shield } from "lucide-react";
 
 export default function Header() {
-  const { user, logoutMutation } = useAuth();
+  const { user, isAdmin, logoutMutation } = useAuth();
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -40,6 +40,7 @@ export default function Header() {
     { href: "/dashboard", label: "Dashboard", active: location === "/dashboard" || location === "/" },
     { href: "/propiedades", label: "Propiedades", active: location === "/propiedades" },
     { href: "/favoritos", label: "Favoritos", active: location === "/favoritos" },
+    ...(isAdmin ? [{ href: "/admin", label: "Administración", active: location === "/admin" }] : []),
   ];
 
   return (
@@ -109,6 +110,15 @@ export default function Header() {
                       Favoritos
                     </Link>
                   </DropdownMenuItem>
+                  
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin" className="cursor-pointer">
+                        <Shield className="h-4 w-4 mr-2" />
+                        Administración
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
 
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 

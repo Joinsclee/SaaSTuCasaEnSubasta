@@ -10,6 +10,7 @@ export const users = pgTable("users", {
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
   phone: text("phone").notNull(),
+  role: text("role").notNull().default("user"), // user, admin
   subscriptionType: text("subscription_type").notNull().default("free"),
   subscriptionExpiresAt: timestamp("subscription_expires_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
