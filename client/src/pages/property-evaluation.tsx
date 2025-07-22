@@ -619,40 +619,67 @@ export default function PropertyEvaluationPage() {
                 {currentStep === 3 && (
                   <div>
                     <CardHeader className="px-0 pt-0">
-                      <CardTitle className="flex items-center text-lg sm:text-xl">
-                        <DollarSign className="w-5 w-6 h-5 sm:h-6 mr-2 text-primary" />
-                        Calcular Oferta Máxima
+                      <CardTitle className="text-lg sm:text-xl text-gray-900 mb-6">
+                        Establecer Límite de Oferta
                       </CardTitle>
                     </CardHeader>
-
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                      <p className="text-green-800 font-medium">¡Perfecta! Esta propiedad cumple todos los criterios.</p>
-                      <div className="mt-2">
-                        <StarRating score={5} />
-                      </div>
-                    </div>
-
+                    
                     <div className="space-y-4 sm:space-y-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Oferta Máxima Recomendada
-                        </label>
-                        <Input
-                          type="number"
-                          value={propertyData.maxOffer}
-                          onChange={(e) => setPropertyData({...propertyData, maxOffer: e.target.value})}
-                          placeholder="$0"
-                        />
+                      {/* Success Alert */}
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <h3 className="font-semibold text-green-800 mb-1">¡Propiedad aprobada para subasta!</h3>
+                            <p className="text-sm text-green-700">Todos los criterios han sido verificados exitosamente.</p>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Button
-                          onClick={saveEvaluation}
+                      {/* 50% Rule Alert */}
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-start gap-3">
+                          <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <h4 className="font-medium text-blue-800 mb-1">Recuerda la regla del 50%</h4>
+                            <p className="text-sm text-blue-700">Tu oferta máxima debe ser menor al 50% del valor de mercado para garantizar rentabilidad.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Max Offer Input */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Establecer Límite Máximo de Oferta
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg font-medium">$</span>
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            value={propertyData.maxOffer}
+                            onChange={(e) => setPropertyData({...propertyData, maxOffer: e.target.value})}
+                            className="pl-8 pr-4 py-3 text-lg font-medium border-gray-300 focus:border-primary focus:ring-primary"
+                          />
+                        </div>
+                        <p className="text-sm text-gray-500 mt-2">
+                          Precio de subasta: ${parseInt(propertyData.price || '0').toLocaleString()}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button 
+                          onClick={saveEvaluation} 
+                          className="flex-1"
                           disabled={!propertyData.maxOffer || createEvaluationMutation.isPending}
                         >
                           {createEvaluationMutation.isPending ? 'Guardando...' : 'Guardar Evaluación'}
                         </Button>
-                        <Button variant="outline" onClick={resetEvaluation}>
+                        <Button 
+                          variant="outline" 
+                          onClick={resetEvaluation}
+                          className="flex-1"
+                        >
                           Nueva Evaluación
                         </Button>
                       </div>
