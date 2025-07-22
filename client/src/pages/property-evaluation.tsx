@@ -794,7 +794,7 @@ export default function PropertyEvaluationPage() {
                 <div className="space-y-3 text-sm">
                   <div className="flex items-start gap-2">
                     <Info className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                    <p>Siempre verifica la información del propietario antes de ofertar.</p>
+                    <p>Siempre verifica la información en múltiples fuentes antes de ofertar.</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <Info className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
