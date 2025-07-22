@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Eye, Heart, Percent, Crown } from "lucide-react";
+import { Eye, Heart, Percent, Crown, Search } from "lucide-react";
 
 interface DashboardStats {
   propertiesViewed: number;
   savedProperties: number;
+  propertiesEvaluated: number;
   averageDiscount: number;
   subscriptionDaysRemaining: number;
 }
@@ -17,8 +18,8 @@ export default function DashboardStats() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {[...Array(4)].map((_, i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+        {[...Array(5)].map((_, i) => (
           <Card key={i}>
             <CardContent className="p-4 sm:p-6">
               <Skeleton className="h-3 sm:h-4 w-20 sm:w-24 mb-2" />
@@ -53,6 +54,15 @@ export default function DashboardStats() {
       changeLabel: "esta semana"
     },
     {
+      label: "Propiedades Evaluadas",
+      value: stats.propertiesEvaluated,
+      icon: Search,
+      iconBg: "bg-orange-50",
+      iconColor: "text-primary",
+      change: "",
+      changeLabel: "con sistema de Kevin"
+    },
+    {
       label: "Descuento Promedio",
       value: `${stats.averageDiscount}%`,
       icon: Percent,
@@ -73,7 +83,7 @@ export default function DashboardStats() {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
       {statsData.map((stat, index) => (
         <Card key={index} className="hover:shadow-md transition-shadow">
           <CardContent className="p-4 sm:p-6">

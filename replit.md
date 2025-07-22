@@ -104,6 +104,13 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
+### Dashboard con Propiedades Evaluadas (July 22, 2025)
+- **Estadísticas Mejoradas**: Agregada nueva métrica "Propiedades Evaluadas" al dashboard
+- **Backend**: Actualizada ruta `/api/dashboard/stats` para incluir conteo de evaluaciones del usuario
+- **Frontend**: Ampliado grid de estadísticas de 4 a 5 columnas para mostrar nueva métrica
+- **Icono**: Usado ícono de búsqueda (Search) con colores naranjas para mantener branding
+- **Descripción**: Texto "con sistema de Kevin" para enfatizar la metodología de evaluación
+
 ### Sistema de Roles (July 22, 2025)
 - **Base de Datos**: Agregado campo `role` a tabla users con valores "user" y "admin"
 - **Middleware de Seguridad**: Implementado `requireAdmin` y `requireAuth` para protección de rutas

@@ -130,6 +130,7 @@ export function registerRoutes(app: Express): Server {
     try {
       const savedProperties = await storage.getSavedProperties(req.user!.id);
       const allProperties = await storage.getProperties({ limit: 1000 });
+      const evaluations = await storage.getPropertyEvaluations(req.user!.id);
       
       // Calculate average discount from viewed properties (simplified)
       const averageDiscount = allProperties.length > 0 
@@ -139,6 +140,7 @@ export function registerRoutes(app: Express): Server {
       const stats = {
         propertiesViewed: allProperties.length,
         savedProperties: savedProperties.length,
+        propertiesEvaluated: evaluations.length,
         averageDiscount,
         subscriptionDaysRemaining: req.user!.subscriptionExpiresAt 
           ? Math.max(0, Math.ceil((new Date(req.user!.subscriptionExpiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
