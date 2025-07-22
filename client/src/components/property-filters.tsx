@@ -84,58 +84,58 @@ export default function PropertyFilters({ onFiltersChange, isLoading }: Property
     onFiltersChange({});
   };
 
-  // Lista completa de estados estadounidenses
+  // Lista completa de estados estadounidenses con iconos representativos
   const states = [
-    { value: "AL", label: "Alabama" },
-    { value: "AK", label: "Alaska" },
-    { value: "AZ", label: "Arizona" },
-    { value: "AR", label: "Arkansas" },
-    { value: "CA", label: "California" },
-    { value: "CO", label: "Colorado" },
-    { value: "CT", label: "Connecticut" },
-    { value: "DE", label: "Delaware" },
-    { value: "FL", label: "Florida" },
-    { value: "GA", label: "Georgia" },
-    { value: "HI", label: "Hawaii" },
-    { value: "ID", label: "Idaho" },
-    { value: "IL", label: "Illinois" },
-    { value: "IN", label: "Indiana" },
-    { value: "IA", label: "Iowa" },
-    { value: "KS", label: "Kansas" },
-    { value: "KY", label: "Kentucky" },
-    { value: "LA", label: "Louisiana" },
-    { value: "ME", label: "Maine" },
-    { value: "MD", label: "Maryland" },
-    { value: "MA", label: "Massachusetts" },
-    { value: "MI", label: "Michigan" },
-    { value: "MN", label: "Minnesota" },
-    { value: "MS", label: "Mississippi" },
-    { value: "MO", label: "Missouri" },
-    { value: "MT", label: "Montana" },
-    { value: "NE", label: "Nebraska" },
-    { value: "NV", label: "Nevada" },
-    { value: "NH", label: "New Hampshire" },
-    { value: "NJ", label: "New Jersey" },
-    { value: "NM", label: "New Mexico" },
-    { value: "NY", label: "New York" },
-    { value: "NC", label: "North Carolina" },
-    { value: "ND", label: "North Dakota" },
-    { value: "OH", label: "Ohio" },
-    { value: "OK", label: "Oklahoma" },
-    { value: "OR", label: "Oregon" },
-    { value: "PA", label: "Pennsylvania" },
-    { value: "RI", label: "Rhode Island" },
-    { value: "SC", label: "South Carolina" },
-    { value: "SD", label: "South Dakota" },
-    { value: "TN", label: "Tennessee" },
-    { value: "TX", label: "Texas" },
-    { value: "UT", label: "Utah" },
-    { value: "VT", label: "Vermont" },
-    { value: "VA", label: "Virginia" },
-    { value: "WA", label: "Washington" },
-    { value: "WV", label: "West Virginia" },
-    { value: "WI", label: "Wisconsin" },
-    { value: "WY", label: "Wyoming" }
+    { value: "AL", label: "Alabama", icon: "🏈" },
+    { value: "AK", label: "Alaska", icon: "🐻" },
+    { value: "AZ", label: "Arizona", icon: "🌵" },
+    { value: "AR", label: "Arkansas", icon: "💎" },
+    { value: "CA", label: "California", icon: "🌞" },
+    { value: "CO", label: "Colorado", icon: "🏔️" },
+    { value: "CT", label: "Connecticut", icon: "🦞" },
+    { value: "DE", label: "Delaware", icon: "🏖️" },
+    { value: "FL", label: "Florida", icon: "🐊" },
+    { value: "GA", label: "Georgia", icon: "🍑" },
+    { value: "HI", label: "Hawaii", icon: "🌺" },
+    { value: "ID", label: "Idaho", icon: "🥔" },
+    { value: "IL", label: "Illinois", icon: "🏢" },
+    { value: "IN", label: "Indiana", icon: "🏁" },
+    { value: "IA", label: "Iowa", icon: "🌽" },
+    { value: "KS", label: "Kansas", icon: "🌾" },
+    { value: "KY", label: "Kentucky", icon: "🐎" },
+    { value: "LA", label: "Louisiana", icon: "🎷" },
+    { value: "ME", label: "Maine", icon: "🦞" },
+    { value: "MD", label: "Maryland", icon: "🦀" },
+    { value: "MA", label: "Massachusetts", icon: "⚓" },
+    { value: "MI", label: "Michigan", icon: "🚗" },
+    { value: "MN", label: "Minnesota", icon: "❄️" },
+    { value: "MS", label: "Mississippi", icon: "🎣" },
+    { value: "MO", label: "Missouri", icon: "🎸" },
+    { value: "MT", label: "Montana", icon: "🦬" },
+    { value: "NE", label: "Nebraska", icon: "🌽" },
+    { value: "NV", label: "Nevada", icon: "🎰" },
+    { value: "NH", label: "New Hampshire", icon: "🍁" },
+    { value: "NJ", label: "New Jersey", icon: "🏖️" },
+    { value: "NM", label: "New Mexico", icon: "🌶️" },
+    { value: "NY", label: "New York", icon: "🗽" },
+    { value: "NC", label: "North Carolina", icon: "🏔️" },
+    { value: "ND", label: "North Dakota", icon: "🛢️" },
+    { value: "OH", label: "Ohio", icon: "✈️" },
+    { value: "OK", label: "Oklahoma", icon: "🤠" },
+    { value: "OR", label: "Oregon", icon: "🌲" },
+    { value: "PA", label: "Pennsylvania", icon: "🔔" },
+    { value: "RI", label: "Rhode Island", icon: "⛵" },
+    { value: "SC", label: "South Carolina", icon: "🏖️" },
+    { value: "SD", label: "South Dakota", icon: "🗿" },
+    { value: "TN", label: "Tennessee", icon: "🎤" },
+    { value: "TX", label: "Texas", icon: "⭐" },
+    { value: "UT", label: "Utah", icon: "🏔️" },
+    { value: "VT", label: "Vermont", icon: "🍁" },
+    { value: "VA", label: "Virginia", icon: "🏛️" },
+    { value: "WA", label: "Washington", icon: "🍎" },
+    { value: "WV", label: "West Virginia", icon: "⛰️" },
+    { value: "WI", label: "Wisconsin", icon: "🧀" },
+    { value: "WY", label: "Wyoming", icon: "🦬" }
   ];
 
   return (
@@ -155,13 +155,32 @@ export default function PropertyFilters({ onFiltersChange, isLoading }: Property
           </Label>
           <Select value={selectedState} onValueChange={handleStateChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Selecciona un estado" />
+              <SelectValue placeholder="Selecciona un estado">
+                {selectedState !== "all" && selectedState && (
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">
+                      {states.find(s => s.value === selectedState)?.icon}
+                    </span>
+                    <span>
+                      {states.find(s => s.value === selectedState)?.label}
+                    </span>
+                  </div>
+                )}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos los estados</SelectItem>
+              <SelectItem value="all">
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">🇺🇸</span>
+                  <span>Todos los estados</span>
+                </div>
+              </SelectItem>
               {states.map((state) => (
                 <SelectItem key={state.value} value={state.value}>
-                  {state.label}
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">{state.icon}</span>
+                    <span>{state.label}</span>
+                  </div>
                 </SelectItem>
               ))}
             </SelectContent>

@@ -104,6 +104,13 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
+### Iconos de Estados en Filtros (July 22, 2025)
+- **UX Mejorada**: Agregados emojis representativos para cada estado estadounidense
+- **Visual Intuitiva**: Iconos como 🌵 para Arizona, 🗽 para New York, 🌞 para California
+- **Selector Mejorado**: Muestra ícono y nombre del estado tanto en opciones como en valor seleccionado
+- **Bandera Nacional**: Opción "Todos los estados" con bandera 🇺🇸 para consistencia visual
+- **Identificación Rápida**: Facilita a usuarios hispanohablantes reconocer estados por características culturales
+
 ### Dashboard con Propiedades Evaluadas (July 22, 2025)
 - **Estadísticas Mejoradas**: Agregada nueva métrica "Propiedades Evaluadas" al dashboard
 - **Backend**: Actualizada ruta `/api/dashboard/stats` para incluir conteo de evaluaciones del usuario
