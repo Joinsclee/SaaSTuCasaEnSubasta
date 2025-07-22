@@ -434,9 +434,6 @@ export default function PropertyDetail() {
                 Obtener Detalles de Subasta
               </Button>
               <Button variant="outline" size="lg" className="w-full">
-                Programar Visita
-              </Button>
-              <Button variant="outline" size="lg" className="w-full">
                 <Download className="h-4 w-4 mr-2" />
                 Descargar Reporte
               </Button>
