@@ -93,27 +93,68 @@ export default function PropertyEvaluationPage() {
 
   const calculateScore = () => {
     let score = 0;
-    if (propertyData.price && parseInt(propertyData.price) < 100000) score++;
-    if (propertyData.location === 'excellent') score++;
-    if (propertyData.accessibility === 'easy') score++;
-    if (propertyData.demographics === 'growing') score++;
-    if (propertyData.inspection === 'good') score++;
-    return score;
+    let details = [];
+    
+    // Criterio 1: Precio accesible (menos de $200,000 o buena relación precio/mercado)
+    if (propertyData.price && parseInt(propertyData.price) < 200000) {
+      score++;
+      details.push("✓ Precio accesible");
+    } else {
+      details.push("✗ Precio muy alto");
+    }
+    
+    // Criterio 2: Ubicación (excelente o buena)
+    if (propertyData.location === 'excellent' || propertyData.location === 'good') {
+      score++;
+      details.push("✓ Buena ubicación");
+    } else {
+      details.push("✗ Ubicación problemática");
+    }
+    
+    // Criterio 3: Accesibilidad (fácil o moderada)
+    if (propertyData.accessibility === 'easy' || propertyData.accessibility === 'moderate') {
+      score++;
+      details.push("✓ Acceso viable");
+    } else {
+      details.push("✗ Acceso difícil");
+    }
+    
+    // Criterio 4: Demografía (en crecimiento o estable)
+    if (propertyData.demographics === 'growing' || propertyData.demographics === 'stable') {
+      score++;
+      details.push("✓ Demografía favorable");
+    } else {
+      details.push("✗ Demografía en declive");
+    }
+    
+    // Criterio 5: Condición (buena o necesita trabajo menor)
+    if (propertyData.inspection === 'good' || propertyData.inspection === 'needs-work') {
+      score++;
+      details.push("✓ Condición aceptable");
+    } else {
+      details.push("✗ Condición muy mala");
+    }
+    
+    return { score, details };
   };
 
   const handleSuperficialEvaluation = () => {
-    const score = calculateScore();
-    setPropertyData({...propertyData, score});
+    const evaluation = calculateScore();
+    setPropertyData({...propertyData, score: evaluation.score});
     
-    if (score >= 3) {
+    // Ahora solo necesita 3 de 5 criterios para pasar (60% de aprobación)
+    if (evaluation.score >= 3) {
       setCurrentStep(2);
+      toast({
+        title: "¡Evaluación aprobada!",
+        description: `Puntuación: ${evaluation.score}/5. La propiedad cumple con los criterios mínimos.`,
+      });
     } else {
       toast({
         title: "Evaluación insuficiente",
-        description: "Esta propiedad no cumple con los criterios mínimos. Se recomienda buscar otra.",
+        description: `Puntuación: ${evaluation.score}/5. Se necesitan al menos 3 criterios aprobados para continuar.`,
         variant: "destructive",
       });
-      resetEvaluation();
     }
   };
 
@@ -602,6 +643,40 @@ export default function PropertyEvaluationPage() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Evaluation Criteria */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Criterios de Evaluación</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-start gap-2">
+                    <DollarSign className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    <p><strong>Precio:</strong> Menos de $200,000 para ser accesible</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    <p><strong>Ubicación:</strong> Zona A o B (excelente/buena)</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Home className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    <p><strong>Acceso:</strong> Fácil o moderado para visitantes</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Users className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    <p><strong>Demografía:</strong> Población creciente o estable</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    <p><strong>Condición:</strong> Buena o con trabajo menor</p>
+                  </div>
+                  <div className="mt-3 p-3 bg-primary/10 rounded-lg">
+                    <p className="font-medium text-primary">Se necesitan 3 de 5 criterios para aprobar</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Tips */}
             <Card>
