@@ -285,7 +285,6 @@ export default function PropertyEvaluationPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         {/* Modal de Problemas Detectados */}
         <Dialog open={showProblemsDialog} onOpenChange={setShowProblemsDialog}>
@@ -799,7 +798,7 @@ export default function PropertyEvaluationPage() {
                   </div>
                   <div className="flex items-start gap-2">
                     <Info className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                    <p>Las propiedades en zonas en crecimiento tienen mejor potencial de apreciación.</p>
+                    <p>Prioriza propiedades en zonas con demografía en crecimiento.</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <Info className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
