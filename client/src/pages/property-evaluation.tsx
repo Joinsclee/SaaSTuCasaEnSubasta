@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { CheckCircle, XCircle, Star, Info, Home, AlertCircle, FileText, DollarSign, MapPin, Users, Search, Trash2 } from 'lucide-react';
+import { CheckCircle, XCircle, Star, Info, Home, AlertCircle, FileText, DollarSign, MapPin, Users, Search, Trash2, X } from 'lucide-react';
 import Header from '@/components/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { PropertyEvaluation, InsertPropertyEvaluation } from '@shared/schema';
@@ -32,6 +33,8 @@ export default function PropertyEvaluationPage() {
   const { toast } = useToast();
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
+  const [showProblemsDialog, setShowProblemsDialog] = useState(false);
+  const [detectedProblems, setDetectedProblems] = useState<string[]>([]);
   const [propertyData, setPropertyData] = useState<PropertyData>({
     address: '',
     price: '',
@@ -168,36 +171,35 @@ export default function PropertyEvaluationPage() {
         description: "Todos los aspectos legales están en orden. Puedes proceder con la oferta.",
       });
     } else {
-      // Mostrar diálogo de confirmación en lugar de resetear automáticamente
+      // Recopilar problemas encontrados
       const problemsFound = [];
       if (!propertyData.ownerMatch) problemsFound.push("Propietario no coincide");
       if (!propertyData.loansMatch) problemsFound.push("Préstamos no claros");
       if (!propertyData.isHouse) problemsFound.push("No es casa unifamiliar");
       
-      const proceed = window.confirm(
-        `⚠️ INVESTIGACIÓN PROFUNDA - PROBLEMAS DETECTADOS\n\n` +
-        `Problemas encontrados:\n${problemsFound.map(p => `• ${p}`).join('\n')}\n\n` +
-        `Kevin recomienda NO continuar con esta propiedad debido a estos riesgos legales.\n\n` +
-        `¿Quieres continuar de todos modos? (No recomendado)\n\n` +
-        `• SÍ = Continuar con la evaluación (bajo tu propio riesgo)\n` +
-        `• NO = Evaluar otra propiedad`
-      );
-      
-      if (proceed) {
-        setCurrentStep(3);
-        toast({
-          title: "Continuando evaluación",
-          description: "⚠️ Procedes bajo tu propio riesgo. Kevin no recomienda esta propiedad.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Evaluación descartada",
-          description: "Decisión inteligente. Busquemos una propiedad más segura.",
-        });
-        resetEvaluation();
-      }
+      // Mostrar diálogo personalizado dentro de la aplicación
+      setDetectedProblems(problemsFound);
+      setShowProblemsDialog(true);
     }
+  };
+
+  const handleContinueWithRisk = () => {
+    setShowProblemsDialog(false);
+    setCurrentStep(3);
+    toast({
+      title: "Continuando evaluación",
+      description: "⚠️ Procedes bajo tu propio riesgo. Kevin no recomienda esta propiedad.",
+      variant: "destructive",
+    });
+  };
+
+  const handleDiscardProperty = () => {
+    setShowProblemsDialog(false);
+    toast({
+      title: "Evaluación descartada",
+      description: "Decisión inteligente. Busquemos una propiedad más segura.",
+    });
+    resetEvaluation();
   };
 
   const saveEvaluation = () => {
@@ -285,6 +287,73 @@ export default function PropertyEvaluationPage() {
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        {/* Modal de Problemas Detectados */}
+        <Dialog open={showProblemsDialog} onOpenChange={setShowProblemsDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <AlertCircle className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <DialogTitle className="text-lg font-semibold text-gray-900">
+                    Investigación Profunda
+                  </DialogTitle>
+                  <p className="text-sm text-red-600 font-medium">Problemas Detectados</p>
+                </div>
+              </div>
+            </DialogHeader>
+            
+            <div className="py-4">
+              <div className="mb-4">
+                <h4 className="font-medium text-gray-900 mb-2">Problemas encontrados:</h4>
+                <ul className="space-y-2">
+                  {detectedProblems.map((problem, index) => (
+                    <li key={index} className="flex items-center gap-2 text-sm text-gray-700">
+                      <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                      {problem}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-amber-800 mb-1">Recomendación de Kevin</p>
+                    <p className="text-sm text-amber-700">
+                      <strong>NO continuar</strong> con esta propiedad debido a estos riesgos legales. 
+                      Es mejor buscar una oportunidad más segura.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <DialogDescription className="text-sm text-gray-600">
+                ¿Quieres continuar de todos modos? (No recomendado)
+              </DialogDescription>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button 
+                variant="outline" 
+                onClick={handleDiscardProperty}
+                className="flex-1"
+              >
+                Evaluar Otra Propiedad
+              </Button>
+              <Button 
+                variant="destructive" 
+                onClick={handleContinueWithRisk}
+                className="flex-1"
+              >
+                Continuar (Riesgo Alto)
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between">
