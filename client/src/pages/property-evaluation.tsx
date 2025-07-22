@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { CheckCircle, XCircle, Star, Info, Home, AlertCircle, FileText, DollarSign, MapPin, Users, Search } from 'lucide-react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { CheckCircle, XCircle, Star, Info, Home, AlertCircle, FileText, DollarSign, MapPin, Users, Search, Trash2 } from 'lucide-react';
 import Header from '@/components/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest, queryClient } from '@/lib/queryClient';
+import { PropertyEvaluation, InsertPropertyEvaluation } from '@shared/schema';
 
 interface PropertyData {
   address: string;
@@ -22,16 +27,8 @@ interface PropertyData {
   score: number;
 }
 
-interface EvaluationHistory {
-  id: number;
-  date: string;
-  address: string;
-  price: string;
-  score: number;
-  maxOffer: string;
-}
-
-export default function PropertyEvaluation() {
+export default function PropertyEvaluationPage() {
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [propertyData, setPropertyData] = useState<PropertyData>({
     address: '',
@@ -46,8 +43,53 @@ export default function PropertyEvaluation() {
     maxOffer: '',
     score: 0
   });
-  const [evaluationHistory, setEvaluationHistory] = useState<EvaluationHistory[]>([]);
-  const [showInfo, setShowInfo] = useState<Record<string, boolean>>({});
+
+  // Queries and mutations
+  const { data: evaluations = [], isLoading } = useQuery<PropertyEvaluation[]>({
+    queryKey: ["/api/evaluations"],
+  });
+
+  const createEvaluationMutation = useMutation({
+    mutationFn: async (evaluationData: InsertPropertyEvaluation) => {
+      const res = await apiRequest("POST", "/api/evaluations", evaluationData);
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/evaluations"] });
+      toast({
+        title: "¡Evaluación guardada!",
+        description: "La evaluación de la propiedad se ha guardado exitosamente.",
+      });
+      resetEvaluation();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error al guardar",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteEvaluationMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/evaluations/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/evaluations"] });
+      toast({
+        title: "Evaluación eliminada",
+        description: "La evaluación ha sido eliminada correctamente.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error al eliminar",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const calculateScore = () => {
     let score = 0;
@@ -66,7 +108,11 @@ export default function PropertyEvaluation() {
     if (score >= 3) {
       setCurrentStep(2);
     } else {
-      alert('Esta propiedad no cumple con los criterios mínimos. Se recomienda buscar otra.');
+      toast({
+        title: "Evaluación insuficiente",
+        description: "Esta propiedad no cumple con los criterios mínimos. Se recomienda buscar otra.",
+        variant: "destructive",
+      });
       resetEvaluation();
     }
   };
@@ -75,23 +121,32 @@ export default function PropertyEvaluation() {
     if (propertyData.ownerMatch && propertyData.loansMatch && propertyData.isHouse) {
       setCurrentStep(3);
     } else {
-      alert('La investigación profunda reveló problemas. Se recomienda descartar esta propiedad.');
+      toast({
+        title: "Investigación fallida",
+        description: "La investigación profunda reveló problemas. Se recomienda descartar esta propiedad.",
+        variant: "destructive",
+      });
       resetEvaluation();
     }
   };
 
   const saveEvaluation = () => {
-    const evaluation: EvaluationHistory = {
-      id: Date.now(),
-      date: new Date().toLocaleDateString('es-ES'),
+    const evaluation: InsertPropertyEvaluation = {
       address: propertyData.address,
-      price: propertyData.price,
-      score: propertyData.score,
-      maxOffer: propertyData.maxOffer
+      price: parseInt(propertyData.price),
+      location: propertyData.location,
+      accessibility: propertyData.accessibility,
+      demographics: propertyData.demographics,
+      inspection: propertyData.inspection,
+      ownerMatch: propertyData.ownerMatch,
+      loansMatch: propertyData.loansMatch,
+      isHouse: propertyData.isHouse,
+      maxOffer: parseInt(propertyData.maxOffer),
+      score: 5,
+      status: 'completed'
     };
-    setEvaluationHistory([...evaluationHistory, evaluation]);
-    alert('¡Propiedad guardada exitosamente! Puedes proceder a la subasta.');
-    resetEvaluation();
+    
+    createEvaluationMutation.mutate(evaluation);
   };
 
   const resetEvaluation = () => {
@@ -111,13 +166,14 @@ export default function PropertyEvaluation() {
     });
   };
 
+  const handleDeleteEvaluation = (id: number) => {
+    deleteEvaluationMutation.mutate(id);
+  };
+
   const InfoTooltip = ({ id, content }: { id: string; content: string }) => (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Info
-          className="w-4 h-4 text-primary cursor-help ml-2"
-          onClick={() => setShowInfo({...showInfo, [id]: !showInfo[id]})}
-        />
+        <Info className="w-4 h-4 text-primary cursor-help ml-2" />
       </TooltipTrigger>
       <TooltipContent>
         <p className="text-sm max-w-64">{content}</p>
@@ -130,7 +186,7 @@ export default function PropertyEvaluation() {
       {[1, 2, 3, 4, 5].map((star) => (
         <Star
           key={star}
-          className={`w-5 h-5 ${star <= score ? 'fill-primary text-primary' : 'text-gray-300'}`}
+          className={`w-4 h-4 ${star <= score ? 'fill-primary text-primary' : 'text-gray-300'}`}
         />
       ))}
       <span className="ml-2 text-sm font-medium">{score}/5</span>
@@ -442,8 +498,11 @@ export default function PropertyEvaluation() {
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Button onClick={saveEvaluation} disabled={!propertyData.maxOffer}>
-                          Guardar Evaluación
+                        <Button
+                          onClick={saveEvaluation}
+                          disabled={!propertyData.maxOffer || createEvaluationMutation.isPending}
+                        >
+                          {createEvaluationMutation.isPending ? 'Guardando...' : 'Guardar Evaluación'}
                         </Button>
                         <Button variant="outline" onClick={resetEvaluation}>
                           Nueva Evaluación
@@ -467,7 +526,7 @@ export default function PropertyEvaluation() {
                 <CardContent>
                   <div className="space-y-2 text-sm">
                     <p><span className="font-medium">Dirección:</span> {propertyData.address}</p>
-                    <p><span className="font-medium">Precio:</span> ${propertyData.price}</p>
+                    <p><span className="font-medium">Precio:</span> ${parseInt(propertyData.price || '0').toLocaleString()}</p>
                     {propertyData.score > 0 && (
                       <div>
                         <span className="font-medium">Puntuación:</span>
@@ -482,20 +541,60 @@ export default function PropertyEvaluation() {
             )}
 
             {/* Evaluation History */}
-            {evaluationHistory.length > 0 && (
+            {!isLoading && evaluations.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Historial de Evaluaciones</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {evaluationHistory.slice(-5).reverse().map((evaluation) => (
+                    {evaluations.slice(0, 5).map((evaluation) => (
                       <div key={evaluation.id} className="border-b pb-3 last:border-b-0">
-                        <p className="font-medium text-sm truncate">{evaluation.address}</p>
-                        <p className="text-xs text-gray-600">{evaluation.date}</p>
-                        <div className="flex items-center justify-between mt-1">
-                          <StarRating score={evaluation.score} />
-                          <Badge variant="secondary">${evaluation.maxOffer}</Badge>
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{evaluation.address}</p>
+                            <p className="text-xs text-gray-600">
+                              {new Date(evaluation.createdAt).toLocaleDateString('es-ES')}
+                            </p>
+                            <div className="flex items-center justify-between mt-2">
+                              <StarRating score={evaluation.score} />
+                              {evaluation.maxOffer && (
+                                <Badge variant="secondary">${evaluation.maxOffer.toLocaleString()}</Badge>
+                              )}
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteEvaluation(evaluation.id)}
+                            disabled={deleteEvaluationMutation.isPending}
+                            className="ml-2 text-red-600 hover:text-red-800"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Loading skeleton for history */}
+            {isLoading && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Historial de Evaluaciones</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="border-b pb-3 last:border-b-0">
+                        <Skeleton className="h-4 w-32 mb-2" />
+                        <Skeleton className="h-3 w-20 mb-2" />
+                        <div className="flex items-center justify-between">
+                          <Skeleton className="h-4 w-16" />
+                          <Skeleton className="h-5 w-12" />
                         </div>
                       </div>
                     ))}

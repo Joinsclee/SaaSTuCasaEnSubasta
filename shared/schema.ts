@@ -97,9 +97,42 @@ export const insertSavedPropertySchema = createInsertSchema(savedProperties).omi
   createdAt: true,
 });
 
+// Property Evaluations schema
+export const propertyEvaluations = pgTable("property_evaluations", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  address: text("address").notNull(),
+  price: integer("price").notNull(),
+  location: text("location").notNull(),
+  accessibility: text("accessibility").notNull(),
+  demographics: text("demographics").notNull(),
+  inspection: text("inspection").notNull(),
+  ownerMatch: boolean("owner_match"),
+  loansMatch: boolean("loans_match"),
+  isHouse: boolean("is_house"),
+  maxOffer: integer("max_offer"),
+  score: integer("score").notNull(),
+  status: text("status").notNull().default("completed"), // draft, completed
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const propertyEvaluationsRelations = relations(propertyEvaluations, ({ one }) => ({
+  user: one(users, {
+    fields: [propertyEvaluations.userId],
+    references: [users.id],
+  }),
+}));
+
+export const insertPropertyEvaluationSchema = createInsertSchema(propertyEvaluations).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertProperty = z.infer<typeof insertPropertySchema>;
 export type Property = typeof properties.$inferSelect;
 export type InsertSavedProperty = z.infer<typeof insertSavedPropertySchema>;
 export type SavedProperty = typeof savedProperties.$inferSelect;
+export type InsertPropertyEvaluation = z.infer<typeof insertPropertyEvaluationSchema>;
+export type PropertyEvaluation = typeof propertyEvaluations.$inferSelect;

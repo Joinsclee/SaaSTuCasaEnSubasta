@@ -1,4 +1,4 @@
-import { users, properties, savedProperties, type User, type InsertUser, type Property, type InsertProperty, type SavedProperty, type InsertSavedProperty } from "@shared/schema";
+import { users, properties, savedProperties, propertyEvaluations, type User, type InsertUser, type Property, type InsertProperty, type SavedProperty, type InsertSavedProperty, type PropertyEvaluation, type InsertPropertyEvaluation } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, asc, gte, lte, ilike, or, inArray, sql } from "drizzle-orm";
 import session from "express-session";
@@ -28,6 +28,12 @@ export interface IStorage {
   getAdminStats(): Promise<{ totalUsers: number; totalProperties: number; adminUsers: number; regularUsers: number }>;
   getAllUsers(): Promise<User[]>;
   updateUserRole(userId: number, role: string): Promise<User | undefined>;
+  
+  // Property evaluations
+  getPropertyEvaluations(userId: number): Promise<PropertyEvaluation[]>;
+  createPropertyEvaluation(evaluation: InsertPropertyEvaluation): Promise<PropertyEvaluation>;
+  updatePropertyEvaluation(id: number, evaluation: Partial<InsertPropertyEvaluation>): Promise<PropertyEvaluation | undefined>;
+  deletePropertyEvaluation(id: number, userId: number): Promise<void>;
   
   sessionStore: any;
 }
@@ -278,6 +284,41 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId))
       .returning();
     return updatedUser || undefined;
+  }
+
+  // Property evaluations
+  async getPropertyEvaluations(userId: number): Promise<PropertyEvaluation[]> {
+    return await db
+      .select()
+      .from(propertyEvaluations)
+      .where(eq(propertyEvaluations.userId, userId))
+      .orderBy(desc(propertyEvaluations.createdAt));
+  }
+
+  async createPropertyEvaluation(evaluation: InsertPropertyEvaluation): Promise<PropertyEvaluation> {
+    const [newEvaluation] = await db
+      .insert(propertyEvaluations)
+      .values(evaluation)
+      .returning();
+    return newEvaluation;
+  }
+
+  async updatePropertyEvaluation(id: number, evaluation: Partial<InsertPropertyEvaluation>): Promise<PropertyEvaluation | undefined> {
+    const [updatedEvaluation] = await db
+      .update(propertyEvaluations)
+      .set(evaluation)
+      .where(eq(propertyEvaluations.id, id))
+      .returning();
+    return updatedEvaluation || undefined;
+  }
+
+  async deletePropertyEvaluation(id: number, userId: number): Promise<void> {
+    await db
+      .delete(propertyEvaluations)
+      .where(and(
+        eq(propertyEvaluations.id, id),
+        eq(propertyEvaluations.userId, userId)
+      ));
   }
 }
 

@@ -224,6 +224,61 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Property evaluation routes (protected)
+  app.get("/api/evaluations", requireAuth, async (req, res, next) => {
+    try {
+      const evaluations = await storage.getPropertyEvaluations(req.user!.id);
+      res.json(evaluations);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/evaluations", requireAuth, async (req, res, next) => {
+    try {
+      const evaluationData = {
+        ...req.body,
+        userId: req.user!.id
+      };
+      const evaluation = await storage.createPropertyEvaluation(evaluationData);
+      res.status(201).json(evaluation);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/evaluations/:id", requireAuth, async (req, res, next) => {
+    try {
+      const evaluationId = parseInt(req.params.id);
+      if (isNaN(evaluationId)) {
+        return res.status(400).json({ message: "ID de evaluación inválido" });
+      }
+      
+      const updatedEvaluation = await storage.updatePropertyEvaluation(evaluationId, req.body);
+      if (!updatedEvaluation) {
+        return res.status(404).json({ message: "Evaluación no encontrada" });
+      }
+      
+      res.json(updatedEvaluation);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/evaluations/:id", requireAuth, async (req, res, next) => {
+    try {
+      const evaluationId = parseInt(req.params.id);
+      if (isNaN(evaluationId)) {
+        return res.status(400).json({ message: "ID de evaluación inválido" });
+      }
+      
+      await storage.deletePropertyEvaluation(evaluationId, req.user!.id);
+      res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
