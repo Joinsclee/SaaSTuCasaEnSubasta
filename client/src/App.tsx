@@ -12,6 +12,7 @@ import AuthPage from "@/pages/auth-page";
 import Dashboard from "@/pages/dashboard";
 import Properties from "@/pages/properties";
 import PropertyDetail from "@/pages/property-detail";
+import PropertyEvaluation from "@/pages/property-evaluation";
 import Favorites from "@/pages/favorites";
 import Profile from "@/pages/profile";
 import KevinExpertPage from "@/pages/kevin-expert";
@@ -24,6 +25,7 @@ function Router() {
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/propiedades" component={Properties} />
       <ProtectedRoute path="/propiedad/:id" component={PropertyDetail} />
+      <ProtectedRoute path="/evaluacion" component={PropertyEvaluation} />
       <ProtectedRoute path="/favoritos" component={Favorites} />
       <ProtectedRoute path="/perfil" component={Profile} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />

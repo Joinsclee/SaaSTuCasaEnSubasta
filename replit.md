@@ -102,9 +102,26 @@ Preferred language: Spanish - Always communicate in Spanish with the user.
 
 The architecture emphasizes type safety, performance, and scalability while maintaining a clear separation between frontend and backend concerns. The use of modern tools like Drizzle ORM, TanStack Query, and Vite ensures efficient development and optimal runtime performance.
 
-## Recent Changes (July 10, 2025)
+## Recent Changes
 
-### Landing Page as Main Entry Point
+### Sistema de Roles (July 22, 2025)
+- **Base de Datos**: Agregado campo `role` a tabla users con valores "user" y "admin"
+- **Middleware de Seguridad**: Implementado `requireAdmin` y `requireAuth` para protección de rutas
+- **Panel de Administración**: Creada página `/admin` con estadísticas y gestión de usuarios
+- **Rutas Admin**: API endpoints para estadísticas, gestión de usuarios y cambio de roles
+- **Usuario Admin**: Creado usuario de prueba (admin/password) con permisos completos
+- **Navegación**: Enlaces de administración en header solo visible para admins
+
+### Sistema de Evaluación de Propiedades (July 22, 2025)
+- **Nueva Página**: Creada ruta `/evaluacion` con sistema completo de evaluación
+- **Proceso de 3 Pasos**: Investigación superficial, profunda y cálculo de oferta máxima
+- **Validación Progresiva**: Sistema de puntuación con criterios específicos de Kevin
+- **Historial de Evaluaciones**: Guardado local de propiedades evaluadas anteriormente
+- **Consejos del Experto**: Tips integrados basados en la experiencia de Kevin
+- **Interfaz Responsiva**: Adaptada completamente a móviles y tablets
+- **Navegación**: Enlace "Evaluación" agregado al menú principal
+
+### Landing Page as Main Entry Point (July 10, 2025)
 - **Route Configuration**: Changed `/` to display LandingPage instead of Dashboard
 - **User Experience**: Landing page now serves as the primary entry point for all users
 - **Authentication Flow**: Users see landing page first, then can navigate to auth or dashboard

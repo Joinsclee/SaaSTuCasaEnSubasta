@@ -39,6 +39,7 @@ export default function Header() {
   const navigation = [
     { href: "/dashboard", label: "Dashboard", active: location === "/dashboard" || location === "/" },
     { href: "/propiedades", label: "Propiedades", active: location === "/propiedades" },
+    { href: "/evaluacion", label: "Evaluación", active: location === "/evaluacion" },
     { href: "/favoritos", label: "Favoritos", active: location === "/favoritos" },
     ...(isAdmin ? [{ href: "/admin", label: "Administración", active: location === "/admin" }] : []),
   ];
@@ -155,6 +156,22 @@ export default function Header() {
                       </span>
                     </Link>
                   ))}
+                  
+                  {isAdmin && (
+                    <Link href="/admin">
+                      <span 
+                        className={`block py-2 px-3 rounded-lg font-medium cursor-pointer ${
+                          location === "/admin"
+                            ? "bg-primary/10 text-primary" 
+                            : "text-gray-600 hover:bg-gray-100"
+                        }`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Shield className="w-4 h-4 inline mr-2" />
+                        Administración
+                      </span>
+                    </Link>
+                  )}
                   
                   {user && (
                     <>

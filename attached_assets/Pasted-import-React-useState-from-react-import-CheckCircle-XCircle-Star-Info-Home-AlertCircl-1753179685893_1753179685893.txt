@@ -1,0 +1,463 @@
+import React, { useState } from 'react';
+import { CheckCircle, XCircle, Star, Info, Home, AlertCircle, FileText, DollarSign, MapPin, Users, Search } from 'lucide-react';
+
+const PropertyEvaluationApp = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [propertyData, setPropertyData] = useState({
+    address: '',
+    price: '',
+    location: '',
+    accessibility: '',
+    demographics: '',
+    inspection: '',
+    ownerMatch: null,
+    loansMatch: null,
+    isHouse: null,
+    maxOffer: '',
+    score: 0
+  });
+  const [evaluationHistory, setEvaluationHistory] = useState([]);
+  const [showInfo, setShowInfo] = useState({});
+
+  const calculateScore = () => {
+    let score = 0;
+    if (propertyData.price && parseInt(propertyData.price) < 100000) score++;
+    if (propertyData.location === 'excellent') score++;
+    if (propertyData.accessibility === 'easy') score++;
+    if (propertyData.demographics === 'growing') score++;
+    if (propertyData.inspection === 'good') score++;
+    return score;
+  };
+
+  const handleSuperficialEvaluation = () => {
+    const score = calculateScore();
+    setPropertyData({...propertyData, score});
+    
+    if (score >= 3) {
+      setCurrentStep(2);
+    } else {
+      alert('Esta propiedad no cumple con los criterios mínimos. Se recomienda buscar otra.');
+      resetEvaluation();
+    }
+  };
+
+  const handleDeepInvestigation = () => {
+    if (propertyData.ownerMatch && propertyData.loansMatch && propertyData.isHouse) {
+      setCurrentStep(3);
+    } else {
+      alert('La investigación profunda reveló problemas. Se recomienda descartar esta propiedad.');
+      resetEvaluation();
+    }
+  };
+
+  const saveEvaluation = () => {
+    const evaluation = {
+      ...propertyData,
+      date: new Date().toLocaleDateString(),
+      id: Date.now()
+    };
+    setEvaluationHistory([...evaluationHistory, evaluation]);
+    alert('¡Propiedad guardada exitosamente! Puedes proceder a la subasta.');
+    resetEvaluation();
+  };
+
+  const resetEvaluation = () => {
+    setCurrentStep(1);
+    setPropertyData({
+      address: '',
+      price: '',
+      location: '',
+      accessibility: '',
+      demographics: '',
+      inspection: '',
+      ownerMatch: null,
+      loansMatch: null,
+      isHouse: null,
+      maxOffer: '',
+      score: 0
+    });
+  };
+
+  const InfoTooltip = ({ id, content }) => (
+    <div className="relative inline-block ml-2">
+      <Info
+        className="w-4 h-4 text-blue-500 cursor-help"
+        onClick={() => setShowInfo({...showInfo, [id]: !showInfo[id]})}
+      />
+      {showInfo[id] && (
+        <div className="absolute z-10 w-64 p-3 bg-blue-50 border border-blue-200 rounded-lg shadow-lg -top-2 left-6">
+          <p className="text-sm text-gray-700">{content}</p>
+        </div>
+      )}
+    </div>
+  );
+
+  const StarRating = ({ score }) => (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          className={`w-5 h-5 ${star <= score ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+        />
+      ))}
+      <span className="ml-2 text-sm font-medium">{score}/5</span>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Home className="w-8 h-8 text-indigo-600" />
+              <h1 className="text-2xl font-bold text-gray-800">Tu Casa en Subasta</h1>
+            </div>
+            <p className="text-sm text-gray-600">Sistema de Evaluación de Propiedades</p>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className={`flex items-center gap-2 ${currentStep >= 1 ? 'text-indigo-600' : 'text-gray-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-indigo-600 text-white' : 'bg-gray-200'}`}>1</div>
+              <span className="font-medium">Investigación Superficial</span>
+            </div>
+            <div className={`flex items-center gap-2 ${currentStep >= 2 ? 'text-indigo-600' : 'text-gray-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-indigo-600 text-white' : 'bg-gray-200'}`}>2</div>
+              <span className="font-medium">Investigación Profunda</span>
+            </div>
+            <div className={`flex items-center gap-2 ${currentStep >= 3 ? 'text-indigo-600' : 'text-gray-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 3 ? 'bg-indigo-600 text-white' : 'bg-gray-200'}`}>3</div>
+              <span className="font-medium">Oferta Final</span>
+            </div>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className={`bg-indigo-600 h-2 rounded-full transition-all duration-300`} style={{width: `${(currentStep / 3) * 100}%`}}></div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Evaluation Form */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              {/* Step 1: Investigación Superficial */}
+              {currentStep === 1 && (
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <Search className="w-6 h-6 mr-2 text-indigo-600" />
+                    Investigación Superficial
+                  </h2>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Dirección de la Propiedad
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        value={propertyData.address}
+                        onChange={(e) => setPropertyData({...propertyData, address: e.target.value})}
+                        placeholder="123 Main St, Ciudad, Estado"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <DollarSign className="w-4 h-4 mr-1" />
+                        Precio de Subasta
+                        <InfoTooltip id="price" content="Busca propiedades con precio menor al 50% del valor de mercado" />
+                      </label>
+                      <input
+                        type="number"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        value={propertyData.price}
+                        onChange={(e) => setPropertyData({...propertyData, price: e.target.value})}
+                        placeholder="$0"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        Ubicación
+                        <InfoTooltip id="location" content="Evalúa el potencial del vecindario y proximidad a servicios" />
+                      </label>
+                      <select
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        value={propertyData.location}
+                        onChange={(e) => setPropertyData({...propertyData, location: e.target.value})}
+                      >
+                        <option value="">Selecciona...</option>
+                        <option value="excellent">Excelente - Zona A</option>
+                        <option value="good">Buena - Zona B</option>
+                        <option value="regular">Regular - Zona C</option>
+                        <option value="poor">Mala - Zona D</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Facilidad de Acceso
+                        <InfoTooltip id="access" content="¿Es fácil llegar a la propiedad? ¿Hay transporte público?" />
+                      </label>
+                      <select
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        value={propertyData.accessibility}
+                        onChange={(e) => setPropertyData({...propertyData, accessibility: e.target.value})}
+                      >
+                        <option value="">Selecciona...</option>
+                        <option value="easy">Fácil acceso</option>
+                        <option value="moderate">Acceso moderado</option>
+                        <option value="difficult">Difícil acceso</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <Users className="w-4 h-4 mr-1" />
+                        Demografía
+                        <InfoTooltip id="demo" content="Evalúa el crecimiento poblacional y económico de la zona" />
+                      </label>
+                      <select
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        value={propertyData.demographics}
+                        onChange={(e) => setPropertyData({...propertyData, demographics: e.target.value})}
+                      >
+                        <option value="">Selecciona...</option>
+                        <option value="growing">En crecimiento</option>
+                        <option value="stable">Estable</option>
+                        <option value="declining">En declive</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Inspección Visual Preliminar
+                      </label>
+                      <select
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        value={propertyData.inspection}
+                        onChange={(e) => setPropertyData({...propertyData, inspection: e.target.value})}
+                      >
+                        <option value="">Selecciona...</option>
+                        <option value="good">Buena condición</option>
+                        <option value="needs-work">Necesita trabajo</option>
+                        <option value="poor">Mala condición</option>
+                      </select>
+                    </div>
+
+                    <button
+                      onClick={handleSuperficialEvaluation}
+                      className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                      disabled={!propertyData.address || !propertyData.price || !propertyData.location || !propertyData.accessibility || !propertyData.demographics || !propertyData.inspection}
+                    >
+                      Evaluar Propiedad
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 2: Investigación Profunda */}
+              {currentStep === 2 && (
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <FileText className="w-6 h-6 mr-2 text-indigo-600" />
+                    Investigación Profunda
+                  </h2>
+                  
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                    <p className="text-green-800 font-medium">¡Excelente! La propiedad pasó la evaluación inicial.</p>
+                    <div className="mt-2">
+                      <StarRating score={propertyData.score} />
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h3 className="font-medium text-gray-800 mb-3">Verificación con PropStream</h3>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">¿El nombre del propietario coincide con archivos públicos?</span>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setPropertyData({...propertyData, ownerMatch: true})}
+                              className={`p-2 rounded ${propertyData.ownerMatch === true ? 'bg-green-100 text-green-600' : 'bg-gray-100'}`}
+                            >
+                              <CheckCircle className="w-5 h-5" />
+                            </button>
+                            <button
+                              onClick={() => setPropertyData({...propertyData, ownerMatch: false})}
+                              className={`p-2 rounded ${propertyData.ownerMatch === false ? 'bg-red-100 text-red-600' : 'bg-gray-100'}`}
+                            >
+                              <XCircle className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">¿Los préstamos abiertos coinciden con la información?</span>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setPropertyData({...propertyData, loansMatch: true})}
+                              className={`p-2 rounded ${propertyData.loansMatch === true ? 'bg-green-100 text-green-600' : 'bg-gray-100'}`}
+                            >
+                              <CheckCircle className="w-5 h-5" />
+                            </button>
+                            <button
+                              onClick={() => setPropertyData({...propertyData, loansMatch: false})}
+                              className={`p-2 rounded ${propertyData.loansMatch === false ? 'bg-red-100 text-red-600' : 'bg-gray-100'}`}
+                            >
+                              <XCircle className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h3 className="font-medium text-gray-800 mb-3">Verificación con Registro Catastral</h3>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">¿La propiedad es una casa (no un solar)?</span>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setPropertyData({...propertyData, isHouse: true})}
+                            className={`p-2 rounded ${propertyData.isHouse === true ? 'bg-green-100 text-green-600' : 'bg-gray-100'}`}
+                          >
+                            <CheckCircle className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => setPropertyData({...propertyData, isHouse: false})}
+                            className={`p-2 rounded ${propertyData.isHouse === false ? 'bg-red-100 text-red-600' : 'bg-gray-100'}`}
+                          >
+                            <XCircle className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleDeepInvestigation}
+                      className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                      disabled={propertyData.ownerMatch === null || propertyData.loansMatch === null || propertyData.isHouse === null}
+                    >
+                      Continuar con la Evaluación
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 3: Oferta Final */}
+              {currentStep === 3 && (
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <DollarSign className="w-6 h-6 mr-2 text-indigo-600" />
+                    Establecer Límite de Oferta
+                  </h2>
+                  
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                    <p className="text-green-800 font-medium">¡Propiedad aprobada para subasta!</p>
+                    <p className="text-sm text-green-700 mt-1">Todos los criterios han sido verificados exitosamente.</p>
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <h3 className="font-medium text-blue-800 mb-2 flex items-center">
+                      <AlertCircle className="w-5 h-5 mr-2" />
+                      Recuerda la regla del 50%
+                    </h3>
+                    <p className="text-sm text-blue-700">Tu oferta máxima debe ser menor al 50% del valor de mercado para garantizar rentabilidad.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Establecer Límite Máximo de Oferta
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-2 text-gray-500">$</span>
+                        <input
+                          type="number"
+                          className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          value={propertyData.maxOffer}
+                          onChange={(e) => setPropertyData({...propertyData, maxOffer: e.target.value})}
+                          placeholder="0"
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">Precio de subasta: ${propertyData.price}</p>
+                    </div>
+
+                    <button
+                      onClick={saveEvaluation}
+                      className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
+                      disabled={!propertyData.maxOffer}
+                    >
+                      Guardar y Proceder a Subasta
+                    </button>
+
+                    <button
+                      onClick={resetEvaluation}
+                      className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                    >
+                      Evaluar Otra Propiedad
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Tips */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">💡 Tips del Experto</h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-indigo-600 font-bold">1.</span>
+                  <p className="text-sm text-gray-600">Siempre verifica la información en múltiples fuentes antes de ofertar.</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-indigo-600 font-bold">2.</span>
+                  <p className="text-sm text-gray-600">La regla del 50%: nunca ofertes más del 50% del valor de mercado.</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-indigo-600 font-bold">3.</span>
+                  <p className="text-sm text-gray-600">Prioriza propiedades en zonas con demografía en crecimiento.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* History */}
+            {evaluationHistory.length > 0 && (
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-lg font-bold text-gray-800 mb-4">📋 Historial de Evaluaciones</h3>
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {evaluationHistory.map((eval) => (
+                    <div key={eval.id} className="bg-gray-50 rounded-lg p-3">
+                      <p className="font-medium text-sm text-gray-800">{eval.address}</p>
+                      <div className="flex items-center justify-between mt-1">
+                        <span className="text-xs text-gray-500">{eval.date}</span>
+                        <StarRating score={eval.score} />
+                      </div>
+                      <p className="text-sm text-indigo-600 font-medium mt-1">
+                        Oferta máx: ${eval.maxOffer}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PropertyEvaluationApp;
