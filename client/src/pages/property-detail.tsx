@@ -430,9 +430,6 @@ export default function PropertyDetail() {
             
             {/* Action Buttons */}
             <div className="space-y-3">
-              <Button size="lg" className="w-full">
-                Obtener Detalles de Subasta
-              </Button>
               <Button variant="outline" size="lg" className="w-full">
                 <Download className="h-4 w-4 mr-2" />
                 Descargar Reporte
