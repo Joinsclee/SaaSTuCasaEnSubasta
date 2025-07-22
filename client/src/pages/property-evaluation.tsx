@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { PropertyEvaluation, InsertPropertyEvaluation } from '@shared/schema';
+import { useAuth } from '@/hooks/use-auth';
 
 interface PropertyData {
   address: string;
@@ -29,6 +30,7 @@ interface PropertyData {
 
 export default function PropertyEvaluationPage() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [propertyData, setPropertyData] = useState<PropertyData>({
     address: '',
@@ -161,18 +163,55 @@ export default function PropertyEvaluationPage() {
   const handleDeepInvestigation = () => {
     if (propertyData.ownerMatch && propertyData.loansMatch && propertyData.isHouse) {
       setCurrentStep(3);
-    } else {
       toast({
-        title: "Investigación fallida",
-        description: "La investigación profunda reveló problemas. Se recomienda descartar esta propiedad.",
-        variant: "destructive",
+        title: "¡Investigación exitosa!",
+        description: "Todos los aspectos legales están en orden. Puedes proceder con la oferta.",
       });
-      resetEvaluation();
+    } else {
+      // Mostrar diálogo de confirmación en lugar de resetear automáticamente
+      const problemsFound = [];
+      if (!propertyData.ownerMatch) problemsFound.push("Propietario no coincide");
+      if (!propertyData.loansMatch) problemsFound.push("Préstamos no claros");
+      if (!propertyData.isHouse) problemsFound.push("No es casa unifamiliar");
+      
+      const proceed = window.confirm(
+        `⚠️ INVESTIGACIÓN PROFUNDA - PROBLEMAS DETECTADOS\n\n` +
+        `Problemas encontrados:\n${problemsFound.map(p => `• ${p}`).join('\n')}\n\n` +
+        `Kevin recomienda NO continuar con esta propiedad debido a estos riesgos legales.\n\n` +
+        `¿Quieres continuar de todos modos? (No recomendado)\n\n` +
+        `• SÍ = Continuar con la evaluación (bajo tu propio riesgo)\n` +
+        `• NO = Evaluar otra propiedad`
+      );
+      
+      if (proceed) {
+        setCurrentStep(3);
+        toast({
+          title: "Continuando evaluación",
+          description: "⚠️ Procedes bajo tu propio riesgo. Kevin no recomienda esta propiedad.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Evaluación descartada",
+          description: "Decisión inteligente. Busquemos una propiedad más segura.",
+        });
+        resetEvaluation();
+      }
     }
   };
 
   const saveEvaluation = () => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "Debes estar autenticado para guardar evaluaciones.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const evaluation: InsertPropertyEvaluation = {
+      userId: user.id,
       address: propertyData.address,
       price: parseInt(propertyData.price),
       location: propertyData.location,
@@ -183,7 +222,7 @@ export default function PropertyEvaluationPage() {
       loansMatch: propertyData.loansMatch,
       isHouse: propertyData.isHouse,
       maxOffer: parseInt(propertyData.maxOffer),
-      score: 5,
+      score: propertyData.score, // Usar el score real calculado
       status: 'completed'
     };
     
