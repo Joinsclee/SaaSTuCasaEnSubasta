@@ -104,6 +104,13 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
+### Dashboard Simplificado (July 24, 2025)
+- **Enfoque en Estadísticas**: Removidas propiedades y filtros del dashboard principal
+- **Navegación Clara**: Dashboard ahora funciona como centro de control con accesos directos
+- **Botones de Acción**: Enlaces directos a Propiedades, Evaluación y Favoritos
+- **Contenido Educativo**: Agregados consejos de inversión y próximas características
+- **UX Separada**: Búsqueda de propiedades exclusiva en sección de propiedades
+
 ### Iconos de Estados en Filtros (July 22, 2025)
 - **UX Mejorada**: Agregados emojis representativos para cada estado estadounidense
 - **Visual Intuitiva**: Iconos como 🌵 para Arizona, 🗽 para New York, 🌞 para California
