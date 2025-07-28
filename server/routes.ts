@@ -6,7 +6,7 @@ import { requireAdmin, requireAuth } from "./middleware/adminAuth";
 import { z } from "zod";
 import { insertPropertySchema } from "@shared/schema";
 
-// Generate sample auction events data
+// Generate consistent auction events data using deterministic seed
 function generateAuctionEvents(state?: string, year = new Date().getFullYear(), month = new Date().getMonth() + 1) {
   const states = [
     'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
@@ -21,41 +21,67 @@ function generateAuctionEvents(state?: string, year = new Date().getFullYear(), 
     'TX': ['Houston', 'Dallas', 'Austin', 'San Antonio'],
     'FL': ['Miami', 'Orlando', 'Tampa', 'Jacksonville'],
     'NY': ['New York', 'Albany', 'Buffalo', 'Rochester'],
-    'AZ': ['Phoenix', 'Tucson', 'Mesa', 'Scottsdale']
+    'AZ': ['Phoenix', 'Tucson', 'Mesa', 'Scottsdale'],
+    'NC': ['Charlotte', 'Raleigh', 'Greensboro', 'Durham']
   };
 
   const auctionTypes = ['foreclosure', 'bankruptcy', 'tax'];
   const times = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
   
-  const events = [];
-  const daysInMonth = new Date(year, month, 0).getDate();
+  // Create deterministic seed based on year and month
+  const seed = year * 100 + month;
   
-  // Generate 15-25 events for the month
-  const numEvents = Math.floor(Math.random() * 11) + 15;
-  
-  for (let i = 0; i < numEvents; i++) {
-    const eventState = state || states[Math.floor(Math.random() * states.length)];
-    const eventDay = Math.floor(Math.random() * daysInMonth) + 1;
-    const eventDate = `${year}-${String(month).padStart(2, '0')}-${String(eventDay).padStart(2, '0')}`;
-    
-    // Skip events in the past
-    const eventDateTime = new Date(eventDate);
-    if (eventDateTime < new Date()) continue;
-    
-    const stateCities = cities[eventState as keyof typeof cities] || ['Downtown', 'Metro Area', 'City Center'];
-    
-    events.push({
-      id: i + 1,
-      date: eventDate,
-      state: eventState,
-      city: stateCities[Math.floor(Math.random() * stateCities.length)],
-      auctionType: auctionTypes[Math.floor(Math.random() * auctionTypes.length)],
-      time: times[Math.floor(Math.random() * times.length)],
-      propertiesCount: Math.floor(Math.random() * 15) + 5
-    });
+  // Deterministic random function using seed
+  function seededRandom(seed: number, index: number) {
+    const x = Math.sin(seed + index) * 10000;
+    return x - Math.floor(x);
   }
   
-  return events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  // First generate ALL events for the month (without state filter)
+  const allEvents = [];
+  const daysInMonth = new Date(year, month, 0).getDate();
+  
+  // Generate consistent events for each state
+  states.forEach((stateCode, stateIndex) => {
+    // Each state gets 0-3 events this month based on deterministic calculation
+    const stateEventCount = Math.floor(seededRandom(seed, stateIndex) * 4);
+    
+    for (let i = 0; i < stateEventCount; i++) {
+      const eventIndex = stateIndex * 10 + i;
+      const eventDay = Math.floor(seededRandom(seed, eventIndex + 1000) * daysInMonth) + 1;
+      const eventDate = `${year}-${String(month).padStart(2, '0')}-${String(eventDay).padStart(2, '0')}`;
+      
+      // Skip events in the past
+      const eventDateTime = new Date(eventDate);
+      if (eventDateTime < new Date()) continue;
+      
+      const stateCities = cities[stateCode as keyof typeof cities] || ['Downtown', 'Metro Area', 'City Center'];
+      const cityIndex = Math.floor(seededRandom(seed, eventIndex + 2000) * stateCities.length);
+      const auctionTypeIndex = Math.floor(seededRandom(seed, eventIndex + 3000) * auctionTypes.length);
+      const timeIndex = Math.floor(seededRandom(seed, eventIndex + 4000) * times.length);
+      const propertiesCount = Math.floor(seededRandom(seed, eventIndex + 5000) * 15) + 5;
+      
+      allEvents.push({
+        id: eventIndex,
+        date: eventDate,
+        state: stateCode,
+        city: stateCities[cityIndex],
+        auctionType: auctionTypes[auctionTypeIndex],
+        time: times[timeIndex],
+        propertiesCount
+      });
+    }
+  });
+  
+  // Sort all events by date
+  const sortedEvents = allEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
+  // Filter by state if specified
+  if (state) {
+    return sortedEvents.filter(event => event.state === state);
+  }
+  
+  return sortedEvents;
 }
 
 export function registerRoutes(app: Express): Server {
