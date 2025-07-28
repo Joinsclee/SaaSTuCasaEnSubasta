@@ -16,13 +16,57 @@ function generateAuctionEvents(state?: string, year = new Date().getFullYear(), 
     'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
   ];
 
-  const cities = {
+  const cities: Record<string, string[]> = {
     'CA': ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento'],
     'TX': ['Houston', 'Dallas', 'Austin', 'San Antonio'],
     'FL': ['Miami', 'Orlando', 'Tampa', 'Jacksonville'],
     'NY': ['New York', 'Albany', 'Buffalo', 'Rochester'],
     'AZ': ['Phoenix', 'Tucson', 'Mesa', 'Scottsdale'],
-    'NC': ['Charlotte', 'Raleigh', 'Greensboro', 'Durham']
+    'NC': ['Charlotte', 'Raleigh', 'Greensboro', 'Durham'],
+    'AL': ['Birmingham', 'Montgomery', 'Mobile', 'Huntsville'],
+    'AK': ['Anchorage', 'Fairbanks', 'Juneau', 'Wasilla'],
+    'AR': ['Little Rock', 'Fort Smith', 'Fayetteville', 'Springdale'],
+    'CO': ['Denver', 'Colorado Springs', 'Aurora', 'Fort Collins'],
+    'CT': ['Hartford', 'Bridgeport', 'New Haven', 'Stamford'],
+    'DE': ['Wilmington', 'Dover', 'Newark', 'Middletown'],
+    'GA': ['Atlanta', 'Augusta', 'Columbus', 'Savannah'],
+    'HI': ['Honolulu', 'Hilo', 'Kailua', 'Kaneohe'],
+    'ID': ['Boise', 'Meridian', 'Nampa', 'Idaho Falls'],
+    'IL': ['Chicago', 'Aurora', 'Rockford', 'Joliet'],
+    'IN': ['Indianapolis', 'Fort Wayne', 'Evansville', 'South Bend'],
+    'IA': ['Des Moines', 'Cedar Rapids', 'Davenport', 'Sioux City'],
+    'KS': ['Wichita', 'Overland Park', 'Kansas City', 'Topeka'],
+    'KY': ['Louisville', 'Lexington', 'Bowling Green', 'Owensboro'],
+    'LA': ['New Orleans', 'Baton Rouge', 'Shreveport', 'Lafayette'],
+    'ME': ['Portland', 'Lewiston', 'Bangor', 'South Portland'],
+    'MD': ['Baltimore', 'Frederick', 'Rockville', 'Gaithersburg'],
+    'MA': ['Boston', 'Worcester', 'Springfield', 'Lowell'],
+    'MI': ['Detroit', 'Grand Rapids', 'Warren', 'Sterling Heights'],
+    'MN': ['Minneapolis', 'Saint Paul', 'Rochester', 'Duluth'],
+    'MS': ['Jackson', 'Gulfport', 'Southaven', 'Hattiesburg'],
+    'MO': ['Kansas City', 'Saint Louis', 'Springfield', 'Independence'],
+    'MT': ['Billings', 'Missoula', 'Great Falls', 'Bozeman'],
+    'NE': ['Omaha', 'Lincoln', 'Bellevue', 'Grand Island'],
+    'NV': ['Las Vegas', 'Henderson', 'Reno', 'North Las Vegas'],
+    'NH': ['Manchester', 'Nashua', 'Concord', 'Dover'],
+    'NJ': ['Newark', 'Jersey City', 'Paterson', 'Elizabeth'],
+    'NM': ['Albuquerque', 'Las Cruces', 'Rio Rancho', 'Santa Fe'],
+    'ND': ['Fargo', 'Bismarck', 'Grand Forks', 'Minot'],
+    'OH': ['Columbus', 'Cleveland', 'Cincinnati', 'Toledo'],
+    'OK': ['Oklahoma City', 'Tulsa', 'Norman', 'Broken Arrow'],
+    'OR': ['Portland', 'Eugene', 'Salem', 'Gresham'],
+    'PA': ['Philadelphia', 'Pittsburgh', 'Allentown', 'Erie'],
+    'RI': ['Providence', 'Warwick', 'Cranston', 'Pawtucket'],
+    'SC': ['Charleston', 'Columbia', 'North Charleston', 'Mount Pleasant'],
+    'SD': ['Sioux Falls', 'Rapid City', 'Aberdeen', 'Brookings'],
+    'TN': ['Nashville', 'Memphis', 'Knoxville', 'Chattanooga'],
+    'UT': ['Salt Lake City', 'West Valley City', 'Provo', 'West Jordan'],
+    'VT': ['Burlington', 'Essex', 'South Burlington', 'Colchester'],
+    'VA': ['Virginia Beach', 'Norfolk', 'Chesapeake', 'Richmond'],
+    'WA': ['Seattle', 'Spokane', 'Tacoma', 'Vancouver'],
+    'WV': ['Charleston', 'Huntington', 'Parkersburg', 'Morgantown'],
+    'WI': ['Milwaukee', 'Madison', 'Green Bay', 'Kenosha'],
+    'WY': ['Cheyenne', 'Casper', 'Laramie', 'Gillette']
   };
 
   const auctionTypes = ['foreclosure', 'bankruptcy', 'tax'];
@@ -38,24 +82,42 @@ function generateAuctionEvents(state?: string, year = new Date().getFullYear(), 
   }
   
   // First generate ALL events for the month (without state filter)
-  const allEvents = [];
+  const allEvents: Array<{
+    id: number;
+    date: string;
+    state: string;
+    city: string;
+    auctionType: string;
+    time: string;
+    propertiesCount: number;
+  }> = [];
   const daysInMonth = new Date(year, month, 0).getDate();
   
   // Generate consistent events for each state
   states.forEach((stateCode, stateIndex) => {
-    // Each state gets 0-3 events this month based on deterministic calculation
-    const stateEventCount = Math.floor(seededRandom(seed, stateIndex) * 4);
+    // Each state gets 1-3 events this month based on deterministic calculation
+    // Ensure minimum 1 event for better user experience
+    const baseEventCount = Math.floor(seededRandom(seed, stateIndex) * 3) + 1;
+    const stateEventCount = Math.min(baseEventCount, 3);
     
     for (let i = 0; i < stateEventCount; i++) {
       const eventIndex = stateIndex * 10 + i;
-      const eventDay = Math.floor(seededRandom(seed, eventIndex + 1000) * daysInMonth) + 1;
+      let eventDay = Math.floor(seededRandom(seed, eventIndex + 1000) * daysInMonth) + 1;
+      
+      // Ensure events are spread out (avoid too many on same day)
+      if (i > 0) {
+        eventDay = Math.min(eventDay + i * 3, daysInMonth);
+      }
+      
       const eventDate = `${year}-${String(month).padStart(2, '0')}-${String(eventDay).padStart(2, '0')}`;
       
-      // Skip events in the past
+      // Skip events in the past, but allow current day
       const eventDateTime = new Date(eventDate);
-      if (eventDateTime < new Date()) continue;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (eventDateTime < today) continue;
       
-      const stateCities = cities[stateCode as keyof typeof cities] || ['Downtown', 'Metro Area', 'City Center'];
+      const stateCities = cities[stateCode] || ['Downtown', 'Metro Area', 'City Center'];
       const cityIndex = Math.floor(seededRandom(seed, eventIndex + 2000) * stateCities.length);
       const auctionTypeIndex = Math.floor(seededRandom(seed, eventIndex + 3000) * auctionTypes.length);
       const timeIndex = Math.floor(seededRandom(seed, eventIndex + 4000) * times.length);
