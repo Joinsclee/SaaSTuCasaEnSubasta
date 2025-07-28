@@ -80,6 +80,22 @@ export default function Dashboard() {
   // Fetch auction events
   const { data: auctionEvents = [] } = useQuery<AuctionEvent[]>({
     queryKey: ["/api/auction-events", selectedState, currentDate.getFullYear(), currentDate.getMonth() + 1],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        year: String(currentDate.getFullYear()),
+        month: String(currentDate.getMonth() + 1)
+      });
+      
+      if (selectedState) {
+        params.append('state', selectedState);
+      }
+      
+      const response = await fetch(`/api/auction-events?${params}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch auction events');
+      }
+      return response.json();
+    }
   });
 
   // Calendar helper functions
@@ -156,7 +172,7 @@ export default function Dashboard() {
                   <Button
                     key={state.code}
                     variant={selectedState === state.code ? "default" : "outline"}
-                    className="h-32 w-full flex flex-col items-center justify-center p-3 text-xs relative overflow-hidden hover:scale-105 transition-transform"
+                    className="h-40 w-full flex flex-col items-center justify-center p-4 text-xs relative overflow-hidden hover:scale-105 transition-transform"
                     onClick={() => setSelectedState(state.code === selectedState ? null : state.code)}
                   >
                     {state.hasImage ? (
@@ -164,14 +180,14 @@ export default function Dashboard() {
                         <img 
                           src={`/attached_assets/states/${state.code}.png`}
                           alt={state.name}
-                          className="w-16 h-16 object-contain mb-2"
+                          className="w-20 h-20 object-contain mb-2"
                           onError={(e) => {
                             // Fallback to emoji if image fails to load
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none';
                             const parent = target.parentElement;
                             if (parent) {
-                              parent.innerHTML = `<div class="text-3xl mb-2">${state.emoji}</div><div class="text-center leading-tight text-xs font-medium">${state.name}</div>`;
+                              parent.innerHTML = `<div class="text-4xl mb-2">${state.emoji}</div><div class="text-center leading-tight text-xs font-medium">${state.name}</div>`;
                             }
                           }}
                         />
@@ -179,7 +195,7 @@ export default function Dashboard() {
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center h-full w-full">
-                        <div className="text-3xl mb-2">{state.emoji}</div>
+                        <div className="text-4xl mb-2">{state.emoji}</div>
                         <div className="text-center leading-tight text-xs font-medium">{state.name}</div>
                       </div>
                     )}
@@ -272,7 +288,9 @@ export default function Dashboard() {
                                 <Clock className="h-3 w-3" />
                                 {event.time}
                               </div>
-                              <div className="truncate">{event.auctionType}</div>
+                              <div className="truncate">
+                                {selectedState ? event.auctionType : `${states.find(s => s.code === event.state)?.name || event.state}`}
+                              </div>
                             </div>
                           ))}
                           {events.length > 2 && (
@@ -339,7 +357,7 @@ export default function Dashboard() {
                       <div key={event.id} className="p-3 bg-white border rounded-lg">
                         <div className="flex items-start justify-between mb-2">
                           <div className="font-medium text-sm">
-                            {event.state} - {event.city}
+                            {states.find(s => s.code === event.state)?.name || event.state} - {event.city}
                           </div>
                           <Badge 
                             variant="secondary" 
