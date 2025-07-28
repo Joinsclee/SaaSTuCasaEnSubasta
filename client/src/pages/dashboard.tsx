@@ -172,7 +172,7 @@ export default function Dashboard() {
                   <Button
                     key={state.code}
                     variant={selectedState === state.code ? "default" : "outline"}
-                    className="h-40 w-full flex flex-col items-center justify-center p-4 text-xs relative overflow-hidden hover:scale-105 transition-transform"
+                    className="h-44 w-full flex flex-col items-center justify-center p-4 text-xs relative overflow-hidden hover:scale-105 transition-transform"
                     onClick={() => setSelectedState(state.code === selectedState ? null : state.code)}
                   >
                     {state.hasImage ? (
@@ -180,7 +180,7 @@ export default function Dashboard() {
                         <img 
                           src={`/attached_assets/states/${state.code}.png`}
                           alt={state.name}
-                          className="w-20 h-20 object-contain mb-2"
+                          className="w-24 h-24 object-contain mb-2"
                           onError={(e) => {
                             // Fallback to emoji if image fails to load
                             const target = e.target as HTMLImageElement;

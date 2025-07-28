@@ -108,11 +108,12 @@ The architecture emphasizes type safety, performance, and scalability while main
 - **Extracción Completa**: Procesados dos archivos ZIP con todas las 50 imágenes de estados
 - **Organización de Archivos**: Creada estructura `/attached_assets/states/` con códigos estandarizados (AL.png, AK.png, etc.)
 - **Servidor Estático**: Configurado Express para servir archivos desde `/attached_assets`
-- **Diseño Mejorado**: Aumentado tamaño de botones de estados (h-32 vs h-20) e imágenes (16x16 vs 12x12)
+- **Diseño Mejorado**: Aumentado tamaño progresivo - botones h-44 (vs h-40) e imágenes w-24 h-24 (vs w-20 h-20)
 - **Grid Responsivo**: Reducido número de columnas para mejor visualización (2-6 columnas vs 6-14)
 - **Nombres Completos**: Reemplazados códigos de estado (NY) con nombres completos (New York)
 - **Efectos Visuales**: Agregado hover:scale-105 y transiciones suaves en botones
 - **Fallback Robusto**: Sistema de respaldo a emojis si las imágenes fallan al cargar
+- **Calendario Consistente**: Corregido problema crítico de eventos inconsistentes entre vista general y filtrada
 
 ### Sistema de Filtros con Tablero de Estados y Calendario (July 24, 2025)
 - **Tablero Visual de Estados**: Grid interactivo con todos los estados estadounidenses
