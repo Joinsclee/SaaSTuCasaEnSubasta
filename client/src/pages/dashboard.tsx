@@ -23,58 +23,58 @@ export default function Dashboard() {
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Lista de estados con emojis como placeholder hasta que subas las imágenes
+  // Lista de estados con imágenes reales y emojis como fallback
   const states = [
-    { code: "AL", name: "Alabama", emoji: "🏈" },
-    { code: "AK", name: "Alaska", emoji: "🐻" },
-    { code: "AZ", name: "Arizona", emoji: "🌵" },
-    { code: "AR", name: "Arkansas", emoji: "💎" },
-    { code: "CA", name: "California", emoji: "🌞" },
-    { code: "CO", name: "Colorado", emoji: "🏔️" },
-    { code: "CT", name: "Connecticut", emoji: "🦞" },
-    { code: "DE", name: "Delaware", emoji: "🏖️" },
-    { code: "FL", name: "Florida", emoji: "🐊" },
-    { code: "GA", name: "Georgia", emoji: "🍑" },
-    { code: "HI", name: "Hawaii", emoji: "🌺" },
-    { code: "ID", name: "Idaho", emoji: "🥔" },
-    { code: "IL", name: "Illinois", emoji: "🏢" },
-    { code: "IN", name: "Indiana", emoji: "🏁" },
-    { code: "IA", name: "Iowa", emoji: "🌽" },
-    { code: "KS", name: "Kansas", emoji: "🌾" },
-    { code: "KY", name: "Kentucky", emoji: "🐎" },
-    { code: "LA", name: "Louisiana", emoji: "🎷" },
-    { code: "ME", name: "Maine", emoji: "🦞" },
-    { code: "MD", name: "Maryland", emoji: "🦀" },
-    { code: "MA", name: "Massachusetts", emoji: "⚓" },
-    { code: "MI", name: "Michigan", emoji: "🚗" },
-    { code: "MN", name: "Minnesota", emoji: "❄️" },
-    { code: "MS", name: "Mississippi", emoji: "🎣" },
-    { code: "MO", name: "Missouri", emoji: "🎸" },
-    { code: "MT", name: "Montana", emoji: "🦬" },
-    { code: "NE", name: "Nebraska", emoji: "🌽" },
-    { code: "NV", name: "Nevada", emoji: "🎰" },
-    { code: "NH", name: "New Hampshire", emoji: "🍁" },
-    { code: "NJ", name: "New Jersey", emoji: "🏖️" },
-    { code: "NM", name: "New Mexico", emoji: "🌶️" },
-    { code: "NY", name: "New York", emoji: "🗽" },
-    { code: "NC", name: "North Carolina", emoji: "🏔️" },
-    { code: "ND", name: "North Dakota", emoji: "🛢️" },
-    { code: "OH", name: "Ohio", emoji: "✈️" },
-    { code: "OK", name: "Oklahoma", emoji: "🤠" },
-    { code: "OR", name: "Oregon", emoji: "🌲" },
-    { code: "PA", name: "Pennsylvania", emoji: "🔔" },
-    { code: "RI", name: "Rhode Island", emoji: "⛵" },
-    { code: "SC", name: "South Carolina", emoji: "🏖️" },
-    { code: "SD", name: "South Dakota", emoji: "🗿" },
-    { code: "TN", name: "Tennessee", emoji: "🎤" },
-    { code: "TX", name: "Texas", emoji: "⭐" },
-    { code: "UT", name: "Utah", emoji: "🏔️" },
-    { code: "VT", name: "Vermont", emoji: "🍁" },
-    { code: "VA", name: "Virginia", emoji: "🏛️" },
-    { code: "WA", name: "Washington", emoji: "🍎" },
-    { code: "WV", name: "West Virginia", emoji: "⛰️" },
-    { code: "WI", name: "Wisconsin", emoji: "🧀" },
-    { code: "WY", name: "Wyoming", emoji: "🦬" }
+    { code: "AL", name: "Alabama", emoji: "🏈", hasImage: true },
+    { code: "AK", name: "Alaska", emoji: "🐻", hasImage: true },
+    { code: "AZ", name: "Arizona", emoji: "🌵", hasImage: true },
+    { code: "AR", name: "Arkansas", emoji: "💎", hasImage: true },
+    { code: "CA", name: "California", emoji: "🌞", hasImage: true },
+    { code: "CO", name: "Colorado", emoji: "🏔️", hasImage: true },
+    { code: "CT", name: "Connecticut", emoji: "🦞", hasImage: true },
+    { code: "DE", name: "Delaware", emoji: "🏖️", hasImage: true },
+    { code: "FL", name: "Florida", emoji: "🐊", hasImage: true },
+    { code: "GA", name: "Georgia", emoji: "🍑", hasImage: true },
+    { code: "HI", name: "Hawaii", emoji: "🌺", hasImage: true },
+    { code: "ID", name: "Idaho", emoji: "🥔", hasImage: true },
+    { code: "IL", name: "Illinois", emoji: "🏢", hasImage: true },
+    { code: "IN", name: "Indiana", emoji: "🏁", hasImage: true },
+    { code: "IA", name: "Iowa", emoji: "🌽", hasImage: true },
+    { code: "KS", name: "Kansas", emoji: "🌾", hasImage: true },
+    { code: "KY", name: "Kentucky", emoji: "🐎", hasImage: true },
+    { code: "LA", name: "Louisiana", emoji: "🎷", hasImage: true },
+    { code: "ME", name: "Maine", emoji: "🦞", hasImage: true },
+    { code: "MD", name: "Maryland", emoji: "🦀", hasImage: true },
+    { code: "MA", name: "Massachusetts", emoji: "⚓", hasImage: true },
+    { code: "MI", name: "Michigan", emoji: "🚗", hasImage: true },
+    { code: "MN", name: "Minnesota", emoji: "❄️", hasImage: true },
+    { code: "MS", name: "Mississippi", emoji: "🎣", hasImage: true },
+    { code: "MO", name: "Missouri", emoji: "🎸", hasImage: true },
+    { code: "MT", name: "Montana", emoji: "🦬", hasImage: true },
+    { code: "NE", name: "Nebraska", emoji: "🌽", hasImage: true },
+    { code: "NV", name: "Nevada", emoji: "🎰", hasImage: false },
+    { code: "NH", name: "New Hampshire", emoji: "🍁", hasImage: false },
+    { code: "NJ", name: "New Jersey", emoji: "🏖️", hasImage: false },
+    { code: "NM", name: "New Mexico", emoji: "🌶️", hasImage: false },
+    { code: "NY", name: "New York", emoji: "🗽", hasImage: false },
+    { code: "NC", name: "North Carolina", emoji: "🏔️", hasImage: false },
+    { code: "ND", name: "North Dakota", emoji: "🛢️", hasImage: false },
+    { code: "OH", name: "Ohio", emoji: "✈️", hasImage: false },
+    { code: "OK", name: "Oklahoma", emoji: "🤠", hasImage: false },
+    { code: "OR", name: "Oregon", emoji: "🌲", hasImage: false },
+    { code: "PA", name: "Pennsylvania", emoji: "🔔", hasImage: false },
+    { code: "RI", name: "Rhode Island", emoji: "⛵", hasImage: false },
+    { code: "SC", name: "South Carolina", emoji: "🏖️", hasImage: true },
+    { code: "SD", name: "South Dakota", emoji: "🗿", hasImage: false },
+    { code: "TN", name: "Tennessee", emoji: "🎤", hasImage: false },
+    { code: "TX", name: "Texas", emoji: "⭐", hasImage: false },
+    { code: "UT", name: "Utah", emoji: "🏔️", hasImage: false },
+    { code: "VT", name: "Vermont", emoji: "🍁", hasImage: false },
+    { code: "VA", name: "Virginia", emoji: "🏛️", hasImage: false },
+    { code: "WA", name: "Washington", emoji: "🍎", hasImage: false },
+    { code: "WV", name: "West Virginia", emoji: "⛰️", hasImage: false },
+    { code: "WI", name: "Wisconsin", emoji: "🧀", hasImage: false },
+    { code: "WY", name: "Wyoming", emoji: "🦬", hasImage: false }
   ];
 
   // Fetch auction events
@@ -156,12 +156,33 @@ export default function Dashboard() {
                   <Button
                     key={state.code}
                     variant={selectedState === state.code ? "default" : "outline"}
-                    className="h-20 w-20 flex flex-col items-center justify-center p-2 text-xs"
+                    className="h-20 w-20 flex flex-col items-center justify-center p-2 text-xs relative overflow-hidden"
                     onClick={() => setSelectedState(state.code === selectedState ? null : state.code)}
                   >
-                    {/* Placeholder para imagen - se reemplazará cuando subas las imágenes */}
-                    <div className="text-2xl mb-1">{state.emoji}</div>
-                    <div className="text-center leading-tight">{state.code}</div>
+                    {state.hasImage ? (
+                      <div className="flex flex-col items-center justify-center h-full w-full">
+                        <img 
+                          src={`/attached_assets/states/${state.code}.png`}
+                          alt={state.name}
+                          className="w-12 h-12 object-contain mb-1"
+                          onError={(e) => {
+                            // Fallback to emoji if image fails to load
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const parent = target.parentElement;
+                            if (parent) {
+                              parent.innerHTML = `<div class="text-2xl mb-1">${state.emoji}</div><div class="text-center leading-tight">${state.code}</div>`;
+                            }
+                          }}
+                        />
+                        <div className="text-center leading-tight">{state.code}</div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full w-full">
+                        <div className="text-2xl mb-1">{state.emoji}</div>
+                        <div className="text-center leading-tight">{state.code}</div>
+                      </div>
+                    )}
                   </Button>
                 ))}
               </div>
