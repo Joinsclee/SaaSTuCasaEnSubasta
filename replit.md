@@ -104,12 +104,15 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
-### Dashboard Simplificado (July 24, 2025)
-- **Enfoque en Estadísticas**: Removidas propiedades y filtros del dashboard principal
-- **Navegación Clara**: Dashboard ahora funciona como centro de control con accesos directos
-- **Botones de Acción**: Enlaces directos a Propiedades, Evaluación y Favoritos
-- **Contenido Educativo**: Agregados consejos de inversión y próximas características
-- **UX Separada**: Búsqueda de propiedades exclusiva en sección de propiedades
+### Sistema de Filtros con Tablero de Estados y Calendario (July 24, 2025)
+- **Tablero Visual de Estados**: Grid interactivo con todos los estados estadounidenses
+- **Iconos de Estados**: Emojis representativos como placeholders (preparado para imágenes reales)
+- **Calendario Integrado**: Muestra eventos de subastas por mes con navegación
+- **Filtrado Dinámico**: Calendario se actualiza según estado seleccionado
+- **API de Eventos**: Endpoint `/api/auction-events` con datos de muestra generados
+- **Información Detallada**: Muestra tipo de subasta, hora y cantidad de propiedades
+- **Navegación Mensual**: Botones para navegar entre meses del año
+- **Vista Dual**: Todos los eventos o filtrados por estado específico
 
 ### Iconos de Estados en Filtros (July 22, 2025)
 - **UX Mejorada**: Agregados emojis representativos para cada estado estadounidense

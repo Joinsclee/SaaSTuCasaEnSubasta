@@ -6,6 +6,58 @@ import { requireAdmin, requireAuth } from "./middleware/adminAuth";
 import { z } from "zod";
 import { insertPropertySchema } from "@shared/schema";
 
+// Generate sample auction events data
+function generateAuctionEvents(state?: string, year = new Date().getFullYear(), month = new Date().getMonth() + 1) {
+  const states = [
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
+  ];
+
+  const cities = {
+    'CA': ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento'],
+    'TX': ['Houston', 'Dallas', 'Austin', 'San Antonio'],
+    'FL': ['Miami', 'Orlando', 'Tampa', 'Jacksonville'],
+    'NY': ['New York', 'Albany', 'Buffalo', 'Rochester'],
+    'AZ': ['Phoenix', 'Tucson', 'Mesa', 'Scottsdale']
+  };
+
+  const auctionTypes = ['foreclosure', 'bankruptcy', 'tax'];
+  const times = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
+  
+  const events = [];
+  const daysInMonth = new Date(year, month, 0).getDate();
+  
+  // Generate 15-25 events for the month
+  const numEvents = Math.floor(Math.random() * 11) + 15;
+  
+  for (let i = 0; i < numEvents; i++) {
+    const eventState = state || states[Math.floor(Math.random() * states.length)];
+    const eventDay = Math.floor(Math.random() * daysInMonth) + 1;
+    const eventDate = `${year}-${String(month).padStart(2, '0')}-${String(eventDay).padStart(2, '0')}`;
+    
+    // Skip events in the past
+    const eventDateTime = new Date(eventDate);
+    if (eventDateTime < new Date()) continue;
+    
+    const stateCities = cities[eventState as keyof typeof cities] || ['Downtown', 'Metro Area', 'City Center'];
+    
+    events.push({
+      id: i + 1,
+      date: eventDate,
+      state: eventState,
+      city: stateCities[Math.floor(Math.random() * stateCities.length)],
+      auctionType: auctionTypes[Math.floor(Math.random() * auctionTypes.length)],
+      time: times[Math.floor(Math.random() * times.length)],
+      propertiesCount: Math.floor(Math.random() * 15) + 5
+    });
+  }
+  
+  return events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+}
+
 export function registerRoutes(app: Express): Server {
   // Setup authentication routes
   setupAuth(app);
@@ -276,6 +328,21 @@ export function registerRoutes(app: Express): Server {
       
       await storage.deletePropertyEvaluation(evaluationId, req.user!.id);
       res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Auction events route
+  app.get("/api/auction-events", async (req, res, next) => {
+    try {
+      const state = req.query.state as string;
+      const year = req.query.year ? parseInt(req.query.year as string) : new Date().getFullYear();
+      const month = req.query.month ? parseInt(req.query.month as string) : new Date().getMonth() + 1;
+      
+      // Generate sample auction events data
+      const auctionEvents = generateAuctionEvents(state, year, month);
+      res.json(auctionEvents);
     } catch (error) {
       next(error);
     }
