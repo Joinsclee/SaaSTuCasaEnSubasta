@@ -23,7 +23,7 @@ export default function Dashboard() {
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Lista de estados con imágenes reales y emojis como fallback
+  // Lista de estados con imágenes reales
   const states = [
     { code: "AL", name: "Alabama", emoji: "🏈", hasImage: true },
     { code: "AK", name: "Alaska", emoji: "🐻", hasImage: true },
@@ -52,29 +52,29 @@ export default function Dashboard() {
     { code: "MO", name: "Missouri", emoji: "🎸", hasImage: true },
     { code: "MT", name: "Montana", emoji: "🦬", hasImage: true },
     { code: "NE", name: "Nebraska", emoji: "🌽", hasImage: true },
-    { code: "NV", name: "Nevada", emoji: "🎰", hasImage: false },
-    { code: "NH", name: "New Hampshire", emoji: "🍁", hasImage: false },
-    { code: "NJ", name: "New Jersey", emoji: "🏖️", hasImage: false },
-    { code: "NM", name: "New Mexico", emoji: "🌶️", hasImage: false },
-    { code: "NY", name: "New York", emoji: "🗽", hasImage: false },
-    { code: "NC", name: "North Carolina", emoji: "🏔️", hasImage: false },
-    { code: "ND", name: "North Dakota", emoji: "🛢️", hasImage: false },
-    { code: "OH", name: "Ohio", emoji: "✈️", hasImage: false },
-    { code: "OK", name: "Oklahoma", emoji: "🤠", hasImage: false },
-    { code: "OR", name: "Oregon", emoji: "🌲", hasImage: false },
-    { code: "PA", name: "Pennsylvania", emoji: "🔔", hasImage: false },
-    { code: "RI", name: "Rhode Island", emoji: "⛵", hasImage: false },
+    { code: "NV", name: "Nevada", emoji: "🎰", hasImage: true },
+    { code: "NH", name: "New Hampshire", emoji: "🍁", hasImage: true },
+    { code: "NJ", name: "New Jersey", emoji: "🏖️", hasImage: true },
+    { code: "NM", name: "New Mexico", emoji: "🌶️", hasImage: true },
+    { code: "NY", name: "New York", emoji: "🗽", hasImage: true },
+    { code: "NC", name: "North Carolina", emoji: "🏔️", hasImage: true },
+    { code: "ND", name: "North Dakota", emoji: "🛢️", hasImage: true },
+    { code: "OH", name: "Ohio", emoji: "✈️", hasImage: true },
+    { code: "OK", name: "Oklahoma", emoji: "🤠", hasImage: true },
+    { code: "OR", name: "Oregon", emoji: "🌲", hasImage: true },
+    { code: "PA", name: "Pennsylvania", emoji: "🔔", hasImage: true },
+    { code: "RI", name: "Rhode Island", emoji: "⛵", hasImage: true },
     { code: "SC", name: "South Carolina", emoji: "🏖️", hasImage: true },
-    { code: "SD", name: "South Dakota", emoji: "🗿", hasImage: false },
-    { code: "TN", name: "Tennessee", emoji: "🎤", hasImage: false },
-    { code: "TX", name: "Texas", emoji: "⭐", hasImage: false },
-    { code: "UT", name: "Utah", emoji: "🏔️", hasImage: false },
-    { code: "VT", name: "Vermont", emoji: "🍁", hasImage: false },
-    { code: "VA", name: "Virginia", emoji: "🏛️", hasImage: false },
-    { code: "WA", name: "Washington", emoji: "🍎", hasImage: false },
-    { code: "WV", name: "West Virginia", emoji: "⛰️", hasImage: false },
-    { code: "WI", name: "Wisconsin", emoji: "🧀", hasImage: false },
-    { code: "WY", name: "Wyoming", emoji: "🦬", hasImage: false }
+    { code: "SD", name: "South Dakota", emoji: "🗿", hasImage: true },
+    { code: "TN", name: "Tennessee", emoji: "🎤", hasImage: true },
+    { code: "TX", name: "Texas", emoji: "⭐", hasImage: true },
+    { code: "UT", name: "Utah", emoji: "🏔️", hasImage: true },
+    { code: "VT", name: "Vermont", emoji: "🍁", hasImage: true },
+    { code: "VA", name: "Virginia", emoji: "🏛️", hasImage: true },
+    { code: "WA", name: "Washington", emoji: "🍎", hasImage: true },
+    { code: "WV", name: "West Virginia", emoji: "⛰️", hasImage: true },
+    { code: "WI", name: "Wisconsin", emoji: "🧀", hasImage: true },
+    { code: "WY", name: "Wyoming", emoji: "🦬", hasImage: true }
   ];
 
   // Fetch auction events
@@ -151,12 +151,12 @@ export default function Dashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-14 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 {states.map((state) => (
                   <Button
                     key={state.code}
                     variant={selectedState === state.code ? "default" : "outline"}
-                    className="h-20 w-20 flex flex-col items-center justify-center p-2 text-xs relative overflow-hidden"
+                    className="h-32 w-full flex flex-col items-center justify-center p-3 text-xs relative overflow-hidden hover:scale-105 transition-transform"
                     onClick={() => setSelectedState(state.code === selectedState ? null : state.code)}
                   >
                     {state.hasImage ? (
@@ -164,23 +164,23 @@ export default function Dashboard() {
                         <img 
                           src={`/attached_assets/states/${state.code}.png`}
                           alt={state.name}
-                          className="w-12 h-12 object-contain mb-1"
+                          className="w-16 h-16 object-contain mb-2"
                           onError={(e) => {
                             // Fallback to emoji if image fails to load
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none';
                             const parent = target.parentElement;
                             if (parent) {
-                              parent.innerHTML = `<div class="text-2xl mb-1">${state.emoji}</div><div class="text-center leading-tight">${state.code}</div>`;
+                              parent.innerHTML = `<div class="text-3xl mb-2">${state.emoji}</div><div class="text-center leading-tight text-xs font-medium">${state.name}</div>`;
                             }
                           }}
                         />
-                        <div className="text-center leading-tight">{state.code}</div>
+                        <div className="text-center leading-tight text-xs font-medium">{state.name}</div>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center h-full w-full">
-                        <div className="text-2xl mb-1">{state.emoji}</div>
-                        <div className="text-center leading-tight">{state.code}</div>
+                        <div className="text-3xl mb-2">{state.emoji}</div>
+                        <div className="text-center leading-tight text-xs font-medium">{state.name}</div>
                       </div>
                     )}
                   </Button>
