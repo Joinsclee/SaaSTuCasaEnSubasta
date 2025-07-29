@@ -18,6 +18,12 @@ function getKevinNotes(opportunityScore: number): string {
   return notes[opportunityScore - 1] || notes[2];
 }
 
+// Seeded random function for consistent property generation
+function seededRandom(seed: number, index: number): number {
+  const x = Math.sin(seed + index) * 10000;
+  return x - Math.floor(x);
+}
+
 // Generate consistent auction events data using deterministic seed
 function generateAuctionEvents(state?: string, year = new Date().getFullYear(), month = new Date().getMonth() + 1) {
   const states = [
@@ -460,19 +466,24 @@ export function registerRoutes(app: Express): Server {
       }
       
       // Generate properties for this specific auction event
-      const properties = await storage.getProperties({
+      let properties = await storage.getProperties({
         state: state || undefined,
         sortBy: 'discount',
         sortOrder: 'desc',
         limit: 50
       });
+
+      // If no properties found, get all properties without state filter
+      if (properties.length === 0) {
+        properties = await storage.getProperties({
+          sortBy: 'discount',
+          sortOrder: 'desc',
+          limit: 50
+        });
+      }
       
       // Create deterministic seed for consistent properties per auction
-      const seed = eventId * 1000 + new Date(date).getTime();
-      function seededRandom(seed: number, index: number) {
-        const x = Math.sin(seed + index) * 10000;
-        return x - Math.floor(x);
-      }
+      const seed = eventId * 1000 + new Date(date || '2025-07-29').getTime();
       
       // Filter and enhance properties for the auction
       const numProperties = Math.floor(seededRandom(seed, 1) * 8) + 5; // 5-12 properties
