@@ -461,10 +461,10 @@ export function registerRoutes(app: Express): Server {
       
       // Generate properties for this specific auction event
       const properties = await storage.getProperties({
-        state: state,
+        state: state || undefined,
         sortBy: 'discount',
         sortOrder: 'desc',
-        limit: 20
+        limit: 50
       });
       
       // Create deterministic seed for consistent properties per auction

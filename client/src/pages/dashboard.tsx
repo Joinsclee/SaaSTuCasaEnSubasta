@@ -124,12 +124,12 @@ export default function Dashboard() {
 
   // Fetch properties for selected auction
   const { data: auctionProperties = [] } = useQuery<AuctionProperty[]>({
-    queryKey: ["/api/auction", selectedAuction?.id, "properties"],
+    queryKey: ["/api/auction", selectedAuction?.id, "properties", selectedAuction?.state, selectedAuction?.date],
     queryFn: async () => {
       if (!selectedAuction) return [];
       
       const params = new URLSearchParams({
-        state: selectedAuction.state || '',
+        state: selectedAuction.state,
         date: selectedAuction.date
       });
       
@@ -216,7 +216,8 @@ export default function Dashboard() {
           <DashboardStats />
         </div>
 
-        {/* States Board */}
+        {/* States Board - Hide when auction is selected */}
+        {!selectedAuction && (
         <div className="mb-8">
           <Card>
             <CardHeader>
@@ -284,8 +285,10 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+        )}
 
-        {/* Calendar Section */}
+        {/* Calendar Section - Hide when auction is selected */}
+        {!selectedAuction && (
         <div className="mb-8">
           <Card>
             <CardHeader>
@@ -463,6 +466,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+        )}
 
         {/* Auction Properties Table */}
         {selectedAuction && (
