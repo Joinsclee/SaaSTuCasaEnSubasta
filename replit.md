@@ -104,7 +104,7 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
-### Imágenes de Estados Completas y UX Mejorada (July 28, 2025)
+### Imágenes de Estados Completas y UX Mejorada (July 29, 2025)
 - **Extracción Completa**: Procesados dos archivos ZIP con todas las 50 imágenes de estados
 - **Organización de Archivos**: Creada estructura `/attached_assets/states/` con códigos estandarizados (AL.png, AK.png, etc.)
 - **Servidor Estático**: Configurado Express para servir archivos desde `/attached_assets`
@@ -114,6 +114,7 @@ The architecture emphasizes type safety, performance, and scalability while main
 - **Efectos Visuales**: Agregado hover:scale-105 y transiciones suaves en botones
 - **Fallback Robusto**: Sistema de respaldo a emojis si las imágenes fallan al cargar
 - **Calendario Consistente**: Corregido problema crítico de eventos inconsistentes entre vista general y filtrada
+- **Selector Limpio**: Eliminados emojis del selector de estados en filtros de propiedades para mayor claridad
 
 ### Sistema de Filtros con Tablero de Estados y Calendario (July 24, 2025)
 - **Tablero Visual de Estados**: Grid interactivo con todos los estados estadounidenses

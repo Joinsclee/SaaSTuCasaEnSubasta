@@ -157,30 +157,19 @@ export default function PropertyFilters({ onFiltersChange, isLoading }: Property
             <SelectTrigger>
               <SelectValue placeholder="Selecciona un estado">
                 {selectedState !== "all" && selectedState && (
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">
-                      {states.find(s => s.value === selectedState)?.icon}
-                    </span>
-                    <span>
-                      {states.find(s => s.value === selectedState)?.label}
-                    </span>
-                  </div>
+                  <span>
+                    {states.find(s => s.value === selectedState)?.label}
+                  </span>
                 )}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">
-                <div className="flex items-center gap-3">
-                  <span className="text-lg">🇺🇸</span>
-                  <span>Todos los estados</span>
-                </div>
+                <span>Todos los estados</span>
               </SelectItem>
               {states.map((state) => (
                 <SelectItem key={state.value} value={state.value}>
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">{state.icon}</span>
-                    <span>{state.label}</span>
-                  </div>
+                  <span>{state.label}</span>
                 </SelectItem>
               ))}
             </SelectContent>
