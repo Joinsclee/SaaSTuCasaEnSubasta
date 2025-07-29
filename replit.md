@@ -104,17 +104,18 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
-### Imágenes de Estados Completas y UX Mejorada (July 29, 2025)
-- **Extracción Completa**: Procesados dos archivos ZIP con todas las 50 imágenes de estados
-- **Organización de Archivos**: Creada estructura `/attached_assets/states/` con códigos estandarizados (AL.png, AK.png, etc.)
-- **Servidor Estático**: Configurado Express para servir archivos desde `/attached_assets`
-- **Diseño Mejorado**: Aumentado tamaño progresivo - botones h-44 (vs h-40) e imágenes w-24 h-24 (vs w-20 h-20)
-- **Grid Responsivo**: Reducido número de columnas para mejor visualización (2-6 columnas vs 6-14)
-- **Nombres Completos**: Reemplazados códigos de estado (NY) con nombres completos (New York)
-- **Efectos Visuales**: Agregado hover:scale-105 y transiciones suaves en botones
-- **Fallback Robusto**: Sistema de respaldo a emojis si las imágenes fallan al cargar
-- **Calendario Consistente**: Corregido problema crítico de eventos inconsistentes entre vista general y filtrada
-- **Selector Limpio**: Eliminados emojis del selector de estados en filtros de propiedades para mayor claridad
+### Tabla de Propiedades por Subasta y Mejoras UX (July 29, 2025)
+- **Tabla Interactiva**: Implementada tabla completa de propiedades cuando se selecciona una subasta
+- **API de Propiedades**: Nueva ruta `/api/auction/:eventId/properties` con datos determinísticos por subasta
+- **Columnas Detalladas**: Dirección, tipo, hab/baños, pies², condado, gravamen, oferta inicial, valor estimado, descuento, oportunidad (estrellas), notas de Kevin
+- **Subastas Clickeables**: Tarjetas de subastas ahora navegables con efectos hover y transiciones
+- **Puntuación Consistente**: Sistema de oportunidad (1-5 estrellas) consistente con las estrellas en propiedades
+- **Notas de Kevin**: Comentarios contextuales del experto basados en puntuación de oportunidad
+- **Navegación Fluida**: Botón "Volver al Calendario" para regresar fácilmente
+- **Datos Determinísticos**: Generación consistente de propiedades por subasta usando semillas matemáticas
+- **Diseño Responsive**: Tabla con scroll horizontal para mantener usabilidad en móviles
+- **Imágenes Mejoradas**: Aumentado tamaño progresivo - botones h-44 e imágenes w-24 h-24
+- **Selector Limpio**: Eliminados emojis del selector de estados en filtros de propiedades
 
 ### Sistema de Filtros con Tablero de Estados y Calendario (July 24, 2025)
 - **Tablero Visual de Estados**: Grid interactivo con todos los estados estadounidenses

@@ -5,7 +5,8 @@ import DashboardStats from "@/components/dashboard-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin, Star, ArrowLeft, Home, DollarSign } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface AuctionEvent {
@@ -18,10 +19,33 @@ interface AuctionEvent {
   propertiesCount: number;
 }
 
+interface AuctionProperty {
+  id: number;
+  address: string;
+  city: string;
+  state: string;
+  county: string;
+  propertyType: string;
+  bedrooms: number;
+  bathrooms: number;
+  sqft: number;
+  originalPrice: number;
+  auctionPrice: number;
+  discount: number;
+  auctionType: string;
+  auctionDate: string;
+  opportunityScore: number;
+  lienAmount: number;
+  estimatedValue: number;
+  openingBid: number;
+  kevinNotes: string;
+}
+
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedAuction, setSelectedAuction] = useState<AuctionEvent | null>(null);
 
   // Lista de estados con imágenes reales
   const states = [
@@ -98,6 +122,26 @@ export default function Dashboard() {
     }
   });
 
+  // Fetch properties for selected auction
+  const { data: auctionProperties = [] } = useQuery<AuctionProperty[]>({
+    queryKey: ["/api/auction", selectedAuction?.id, "properties"],
+    queryFn: async () => {
+      if (!selectedAuction) return [];
+      
+      const params = new URLSearchParams({
+        state: selectedAuction.state || '',
+        date: selectedAuction.date
+      });
+      
+      const response = await fetch(`/api/auction/${selectedAuction.id}/properties?${params}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch auction properties');
+      }
+      return response.json();
+    },
+    enabled: !!selectedAuction
+  });
+
   // Calendar helper functions
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -135,6 +179,31 @@ export default function Dashboard() {
       case 'tax': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const renderStars = (score: number) => {
+    return (
+      <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`h-4 w-4 ${
+              star <= score 
+                ? 'fill-yellow-400 text-yellow-400' 
+                : 'text-gray-300'
+            }`}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  const handleAuctionClick = (auction: AuctionEvent) => {
+    setSelectedAuction(auction);
+  };
+
+  const handleBackToCalendar = () => {
+    setSelectedAuction(null);
   };
 
   return (
@@ -313,7 +382,11 @@ export default function Dashboard() {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {auctionEvents.slice(0, 6).map((event) => (
-                      <div key={event.id} className="p-4 bg-white border rounded-lg">
+                      <div 
+                        key={event.id} 
+                        className="p-4 bg-white border rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+                        onClick={() => handleAuctionClick(event)}
+                      >
                         <div className="flex items-start justify-between mb-2">
                           <div className="font-medium text-sm">
                             {new Date(event.date).toLocaleDateString('es-ES', { 
@@ -354,7 +427,11 @@ export default function Dashboard() {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {auctionEvents.slice(0, 8).map((event) => (
-                      <div key={event.id} className="p-3 bg-white border rounded-lg">
+                      <div 
+                        key={event.id} 
+                        className="p-3 bg-white border rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+                        onClick={() => handleAuctionClick(event)}
+                      >
                         <div className="flex items-start justify-between mb-2">
                           <div className="font-medium text-sm">
                             {states.find(s => s.code === event.state)?.name || event.state} - {event.city}
@@ -386,6 +463,125 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Auction Properties Table */}
+        {selectedAuction && (
+          <div className="mb-8">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Home className="h-5 w-5 text-primary" />
+                    Propiedades en Subasta - {selectedAuction.city}, {states.find(s => s.code === selectedAuction.state)?.name}
+                  </CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleBackToCalendar}
+                    className="flex items-center gap-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Volver al Calendario
+                  </Button>
+                </div>
+                <div className="text-sm text-gray-600">
+                  {new Date(selectedAuction.date).toLocaleDateString('es-ES', { 
+                    weekday: 'long',
+                    day: 'numeric', 
+                    month: 'long',
+                    year: 'numeric'
+                  })} a las {selectedAuction.time}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Dirección</TableHead>
+                        <TableHead>Tipo</TableHead>
+                        <TableHead>Hab/Baños</TableHead>
+                        <TableHead>Pies²</TableHead>
+                        <TableHead>Condado</TableHead>
+                        <TableHead>Gravamen</TableHead>
+                        <TableHead>Oferta Inicial</TableHead>
+                        <TableHead>Valor Est.</TableHead>
+                        <TableHead>Descuento</TableHead>
+                        <TableHead>Oportunidad</TableHead>
+                        <TableHead>Notas de Kevin</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {auctionProperties.map((property) => (
+                        <TableRow key={property.id} className="hover:bg-gray-50">
+                          <TableCell className="font-medium">
+                            <div>
+                              <div className="font-semibold text-sm">{property.address}</div>
+                              <div className="text-xs text-gray-500">{property.city}, {property.state}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="text-xs">
+                              {property.propertyType}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {property.bedrooms}h / {property.bathrooms}b
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {property.sqft?.toLocaleString()}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">{property.county}</div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm font-medium text-red-600">
+                              ${property.lienAmount?.toLocaleString()}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm font-medium text-blue-600">
+                              ${property.openingBid?.toLocaleString()}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm font-medium">
+                              ${property.estimatedValue?.toLocaleString()}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary" className="bg-green-100 text-green-800">
+                              {property.discount}%
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {renderStars(property.opportunityScore)}
+                          </TableCell>
+                          <TableCell className="max-w-48">
+                            <div className="text-xs text-gray-600 truncate" title={property.kevinNotes}>
+                              {property.kevinNotes}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                
+                {auctionProperties.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    <Home className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p>Cargando propiedades de la subasta...</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );

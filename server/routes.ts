@@ -6,6 +6,18 @@ import { requireAdmin, requireAuth } from "./middleware/adminAuth";
 import { z } from "zod";
 import { insertPropertySchema } from "@shared/schema";
 
+// Helper function for Kevin's notes based on opportunity score
+function getKevinNotes(opportunityScore: number): string {
+  const notes = [
+    "Requiere inspección detallada. Posible problema estructural.",
+    "Buena oportunidad pero verificar títulos y gravámenes.",
+    "Propiedad sólida con potencial de revalorización moderada.",
+    "Excelente inversión. Ubicación premium y condición favorable.",
+    "Oportunidad excepcional. Máxima prioridad para inversión."
+  ];
+  return notes[opportunityScore - 1] || notes[2];
+}
+
 // Generate consistent auction events data using deterministic seed
 function generateAuctionEvents(state?: string, year = new Date().getFullYear(), month = new Date().getMonth() + 1) {
   const states = [
@@ -435,6 +447,54 @@ export function registerRoutes(app: Express): Server {
       next(error);
     }
   });
+
+  // Properties by auction route
+  app.get("/api/auction/:eventId/properties", async (req, res, next) => {
+    try {
+      const eventId = parseInt(req.params.eventId);
+      const state = req.query.state as string;
+      const date = req.query.date as string;
+      
+      if (isNaN(eventId)) {
+        return res.status(400).json({ message: "ID de evento inválido" });
+      }
+      
+      // Generate properties for this specific auction event
+      const properties = await storage.getProperties({
+        state: state,
+        sortBy: 'discount',
+        sortOrder: 'desc',
+        limit: 20
+      });
+      
+      // Create deterministic seed for consistent properties per auction
+      const seed = eventId * 1000 + new Date(date).getTime();
+      function seededRandom(seed: number, index: number) {
+        const x = Math.sin(seed + index) * 10000;
+        return x - Math.floor(x);
+      }
+      
+      // Filter and enhance properties for the auction
+      const numProperties = Math.floor(seededRandom(seed, 1) * 8) + 5; // 5-12 properties
+      const auctionProperties = properties.slice(0, numProperties).map((property, index) => ({
+        ...property,
+        auctionEventId: eventId,
+        opportunityScore: Math.floor(seededRandom(seed, index + 100) * 5) + 1, // 1-5 stars
+        auctionDate: date,
+        lienAmount: Math.floor(seededRandom(seed, index + 200) * 50000) + 10000,
+        estimatedValue: property.marketValue || property.originalPrice,
+        bidIncrement: 1000,
+        openingBid: Math.floor(Number(property.auctionPrice) * (0.7 + seededRandom(seed, index + 300) * 0.2)),
+        kevinNotes: getKevinNotes(Math.floor(seededRandom(seed, index + 100) * 5) + 1)
+      }));
+      
+      res.json(auctionProperties);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+
 
   const httpServer = createServer(app);
   return httpServer;
