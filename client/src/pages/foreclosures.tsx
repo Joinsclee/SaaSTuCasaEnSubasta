@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Home, Star, AlertCircle, TrendingUp, Calendar } from "lucide-react";
+import AttomInfoCard from "@/components/attom-info-card";
 
 interface ForeclosureProperty {
   id: number;
@@ -225,19 +226,12 @@ export default function Foreclosures() {
           </CardContent>
         </Card>
 
-        {/* API Status Notice */}
-        {foreclosureData?.notice && (
-          <Card className="mb-6 border-orange-200 bg-orange-50">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-orange-600" />
-                <div>
-                  <p className="font-medium text-orange-800">Modo de Demostración</p>
-                  <p className="text-sm text-orange-700 mt-1">{foreclosureData.notice}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {/* ATTOM Data Status Info */}
+        {foreclosureData && (
+          <AttomInfoCard 
+            source={foreclosureData.source || 'ATTOM Data'} 
+            notice={foreclosureData.notice} 
+          />
         )}
 
         {/* Results */}
