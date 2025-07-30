@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import jsPDF from 'jspdf';
+import * as XLSX from 'xlsx';
 import { CheckCircle, XCircle, Star, Info, Home, AlertCircle, FileText, DollarSign, MapPin, Users, Search, Trash2, X, Download } from 'lucide-react';
 import Header from '@/components/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -97,62 +98,101 @@ export default function PropertyEvaluationPage() {
     },
   });
 
-  // Function to download evaluations as CSV
-  const downloadEvaluationsCSV = () => {
+  // Function to download evaluations as Excel with formatting
+  const downloadEvaluationsExcel = () => {
     if (!evaluations.length) return;
     
-    // Create CSV headers
+    // Create headers with puntuación at the end
     const headers = [
       'Fecha',
       'Dirección',
       'Precio de Subasta',
       'Oferta Máxima',
-      'Puntuación',
       'Ubicación',
       'Accesibilidad',
       'Demografía',
       'Inspección',
       'Propietario Coincide',
       'Préstamos Claros',
-      'Es Casa Unifamiliar'
+      'Es Casa Unifamiliar',
+      'Puntuación' // Moved to the end
     ];
     
-    // Convert evaluations to CSV rows
-    const csvRows = evaluations.map(evaluation => [
+    // Convert evaluations to Excel rows with puntuación at the end
+    const excelData = evaluations.map(evaluation => [
       new Date(evaluation.createdAt).toLocaleDateString('es-ES'),
-      `"${evaluation.address}"`,
+      evaluation.address,
       evaluation.price || 0,
       evaluation.maxOffer || 0,
-      evaluation.score,
       evaluation.location || '',
       evaluation.accessibility || '',
       evaluation.demographics || '',
       evaluation.inspection || '',
       evaluation.ownerMatch ? 'Sí' : evaluation.ownerMatch === false ? 'No' : 'N/A',
       evaluation.loansMatch ? 'Sí' : evaluation.loansMatch === false ? 'No' : 'N/A',
-      evaluation.isHouse ? 'Sí' : evaluation.isHouse === false ? 'No' : 'N/A'
+      evaluation.isHouse ? 'Sí' : evaluation.isHouse === false ? 'No' : 'N/A',
+      evaluation.score // Puntuación at the end
     ]);
     
-    // Create CSV content
-    const csvContent = [
-      headers.join(','),
-      ...csvRows.map(row => row.join(','))
-    ].join('\n');
+    // Create worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...excelData]);
     
-    // Create and download file
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `evaluaciones_propiedades_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Set column widths
+    const columnWidths = [
+      { wch: 12 }, // Fecha
+      { wch: 30 }, // Dirección
+      { wch: 15 }, // Precio de Subasta
+      { wch: 15 }, // Oferta Máxima
+      { wch: 12 }, // Ubicación
+      { wch: 15 }, // Accesibilidad
+      { wch: 12 }, // Demografía
+      { wch: 12 }, // Inspección
+      { wch: 18 }, // Propietario Coincide
+      { wch: 15 }, // Préstamos Claros
+      { wch: 18 }, // Es Casa Unifamiliar
+      { wch: 12 }  // Puntuación
+    ];
+    worksheet['!cols'] = columnWidths;
+    
+    // Apply green background to the puntuación column (column L, index 11)
+    const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+    for (let row = 0; row <= range.e.r; row++) {
+      const cellAddress = XLSX.utils.encode_cell({ r: row, c: 11 }); // Column L (Puntuación)
+      if (!worksheet[cellAddress]) continue;
+      
+      worksheet[cellAddress].s = {
+        fill: {
+          fgColor: { rgb: "C8E6C9" } // Light green color
+        },
+        font: {
+          bold: row === 0 // Bold for header
+        },
+        alignment: {
+          horizontal: "center"
+        }
+      };
+    }
+    
+    // Apply bold formatting to headers
+    for (let col = 0; col <= range.e.c; col++) {
+      const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
+      if (!worksheet[cellAddress]) continue;
+      
+      if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
+      worksheet[cellAddress].s.font = { bold: true };
+      worksheet[cellAddress].s.fill = { fgColor: { rgb: col === 11 ? "C8E6C9" : "F5F5F5" } };
+    }
+    
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Evaluaciones');
+    
+    // Download file
+    XLSX.writeFile(workbook, `evaluaciones_propiedades_${new Date().toISOString().split('T')[0]}.xlsx`);
     
     toast({
       title: "Descarga completada",
-      description: `Se han descargado ${evaluations.length} evaluaciones en formato CSV.`,
+      description: `Se han descargado ${evaluations.length} evaluaciones en formato Excel con formato destacado.`,
     });
   };
 
@@ -884,11 +924,11 @@ export default function PropertyEvaluationPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={downloadEvaluationsCSV}
+                      onClick={downloadEvaluationsExcel}
                       className="text-xs"
                     >
                       <Download className="h-4 w-4 mr-1" />
-                      CSV
+                      Excel
                     </Button>
                     <Button
                       variant="outline"
