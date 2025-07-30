@@ -104,15 +104,15 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
-### Integración con ATTOM Data API (January 30, 2025)
-- **Servicio ATTOM**: Implementado servicio completo para conectar con ATTOM Data API
-- **Nueva Página**: "Datos Reales" agregada al menú principal (`/foreclosures`)
-- **API Real**: Endpoint `/api/foreclosures` que consume datos de ATTOM Data
-- **Interfaz Completa**: Filtros por estado, ciudad, código postal con paginación
-- **Manejo de Errores**: Sistema robusto para manejar problemas de API key
-- **Datos de Demo**: Fallback inteligente con datos realistas mientras se configura acceso
-- **Transformación**: Convierte datos ATTOM al formato interno de la aplicación
-- **Estado Actual**: Requiere verificación de API key de ATTOM Data para acceso completo
+### Sistema de Sincronización de Datos ATTOM (January 30, 2025)
+- **Arquitectura Interna**: Sistema de sincronización implementado dentro de la aplicación
+- **Sincronización Automática**: Proceso diario a las 2:00 AM para actualizar propiedades
+- **Panel de Administración**: Nueva página `/admin/sync` para gestión manual de sincronización
+- **Google Maps Integration**: Servicio para generar imágenes automáticas de propiedades ($7/1000)
+- **Base de Datos Extendida**: Nuevos campos para ATTOM ID, imágenes, scoring y metadatos
+- **Logs de Sincronización**: Tabla `sync_logs` para monitorear historial y errores
+- **Página "Datos Reales"**: Temporalmente oculta hasta obtener acceso completo a ATTOM API
+- **Estado Actual**: Sistema listo para activar cuando se configure API key válida
 
 ## Recent Changes
 
