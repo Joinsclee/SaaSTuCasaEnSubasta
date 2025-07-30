@@ -471,7 +471,8 @@ export function registerRoutes(app: Express): Server {
           pageSize: foreclosureData.status?.pagesize || pageSize,
           total: foreclosureData.status?.total || transformedProperties.length
         },
-        source: 'ATTOM Data API'
+        source: foreclosureData.status?.msg?.includes('Demo') ? 'Demo Data (ATTOM Integration Pending)' : 'ATTOM Data API',
+        notice: foreclosureData.status?.msg?.includes('Demo') ? 'Datos de demostración - La integración con ATTOM Data requiere verificación de API key' : null
       });
     } catch (error) {
       console.error('Error fetching foreclosure data:', error);

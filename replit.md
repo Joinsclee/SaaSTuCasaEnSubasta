@@ -104,6 +104,18 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
+### Integración con ATTOM Data API (January 30, 2025)
+- **Servicio ATTOM**: Implementado servicio completo para conectar con ATTOM Data API
+- **Nueva Página**: "Datos Reales" agregada al menú principal (`/foreclosures`)
+- **API Real**: Endpoint `/api/foreclosures` que consume datos de ATTOM Data
+- **Interfaz Completa**: Filtros por estado, ciudad, código postal con paginación
+- **Manejo de Errores**: Sistema robusto para manejar problemas de API key
+- **Datos de Demo**: Fallback inteligente con datos realistas mientras se configura acceso
+- **Transformación**: Convierte datos ATTOM al formato interno de la aplicación
+- **Estado Actual**: Requiere verificación de API key de ATTOM Data para acceso completo
+
+## Recent Changes
+
 ### Sistema de Favoritos y Navegación en Tabla de Subastas (January 30, 2025)
 - **Favoritos Integrados**: Botón de corazón en cada fila de la tabla para guardar propiedades favoritas
 - **Navegación Directa**: Click en filas de propiedades navega a página de detalles `/propiedades/:id`
