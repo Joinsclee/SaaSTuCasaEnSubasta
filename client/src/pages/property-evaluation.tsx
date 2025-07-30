@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 import { CheckCircle, XCircle, Star, Info, Home, AlertCircle, FileText, DollarSign, MapPin, Users, Search, Trash2, X, Download } from 'lucide-react';
 import Header from '@/components/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -163,71 +162,83 @@ export default function PropertyEvaluationPage() {
     
     const doc = new jsPDF();
     const currentDate = new Date().toLocaleDateString('es-ES');
+    let yPosition = 20;
     
     // Title
     doc.setFontSize(20);
     doc.setTextColor(255, 136, 39); // Orange color
-    doc.text('Tu Casa en Subasta', 14, 20);
+    doc.text('Tu Casa en Subasta', 14, yPosition);
     
+    yPosition += 12;
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
-    doc.text('Reporte de Evaluaciones de Propiedades', 14, 30);
+    doc.text('Reporte de Evaluaciones de Propiedades', 14, yPosition);
     
     // User info and date
+    yPosition += 12;
     doc.setFontSize(12);
-    doc.text(`Usuario: ${user?.username || 'Usuario'}`, 14, 40);
-    doc.text(`Fecha: ${currentDate}`, 14, 48);
-    doc.text(`Total de evaluaciones: ${evaluations.length}`, 14, 56);
+    doc.text(`Usuario: ${user?.username || 'Usuario'}`, 14, yPosition);
+    yPosition += 8;
+    doc.text(`Fecha: ${currentDate}`, 14, yPosition);
+    yPosition += 8;
+    doc.text(`Total de evaluaciones: ${evaluations.length}`, 14, yPosition);
     
-    // Create table data
-    const tableData = evaluations.map(evaluation => [
-      new Date(evaluation.createdAt).toLocaleDateString('es-ES'),
-      evaluation.address,
-      `$${(evaluation.price || 0).toLocaleString()}`,
-      `$${(evaluation.maxOffer || 0).toLocaleString()}`,
-      `${evaluation.score}/5`,
-      evaluation.location || 'N/A',
-      evaluation.accessibility || 'N/A',
-      evaluation.demographics || 'N/A',
-      evaluation.inspection || 'N/A'
-    ]);
-    
-    // Add table
-    (doc as any).autoTable({
-      startY: 65,
-      head: [['Fecha', 'Dirección', 'Precio Subasta', 'Oferta Máx.', 'Puntuación', 'Ubicación', 'Acceso', 'Demografía', 'Inspección']],
-      body: tableData,
-      styles: { fontSize: 8, cellPadding: 2 },
-      headStyles: { fillColor: [255, 136, 39], textColor: 255 }, // Orange header
-      columnStyles: {
-        0: { cellWidth: 18 },
-        1: { cellWidth: 35 },
-        2: { cellWidth: 20 },
-        3: { cellWidth: 20 },
-        4: { cellWidth: 15 },
-        5: { cellWidth: 20 },
-        6: { cellWidth: 15 },
-        7: { cellWidth: 20 },
-        8: { cellWidth: 20 }
-      },
-      margin: { left: 14, right: 14 }
-    });
-    
-    // Add summary statistics
-    const finalY = (doc as any).lastAutoTable.finalY + 15;
+    // Summary statistics
+    yPosition += 15;
     doc.setFontSize(14);
-    doc.text('Resumen Estadístico:', 14, finalY);
+    doc.text('Resumen Estadístico:', 14, yPosition);
     
     const avgScore = evaluations.reduce((sum, e) => sum + e.score, 0) / evaluations.length;
     const totalInvestment = evaluations.reduce((sum, e) => sum + (e.maxOffer || 0), 0);
     const approved = evaluations.filter(e => e.score >= 3).length;
     
+    yPosition += 10;
     doc.setFontSize(11);
-    doc.text(`• Puntuación promedio: ${avgScore.toFixed(1)}/5`, 14, finalY + 10);
-    doc.text(`• Propiedades aprobadas: ${approved} de ${evaluations.length} (${((approved/evaluations.length)*100).toFixed(1)}%)`, 14, finalY + 18);
-    doc.text(`• Inversión total planeada: $${totalInvestment.toLocaleString()}`, 14, finalY + 26);
+    doc.text(`• Puntuación promedio: ${avgScore.toFixed(1)}/5`, 14, yPosition);
+    yPosition += 8;
+    doc.text(`• Propiedades aprobadas: ${approved} de ${evaluations.length} (${((approved/evaluations.length)*100).toFixed(1)}%)`, 14, yPosition);
+    yPosition += 8;
+    doc.text(`• Inversión total planeada: $${totalInvestment.toLocaleString()}`, 14, yPosition);
     
-    // Add footer
+    // Property details
+    yPosition += 15;
+    doc.setFontSize(14);
+    doc.text('Detalle de Evaluaciones:', 14, yPosition);
+    
+    evaluations.forEach((evaluation, index) => {
+      yPosition += 12;
+      
+      // Check if we need a new page
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(12);
+      doc.setTextColor(255, 136, 39);
+      doc.text(`${index + 1}. ${evaluation.address}`, 14, yPosition);
+      
+      yPosition += 8;
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Fecha: ${new Date(evaluation.createdAt).toLocaleDateString('es-ES')}`, 20, yPosition);
+      yPosition += 6;
+      doc.text(`Precio de subasta: $${(evaluation.price || 0).toLocaleString()}`, 20, yPosition);
+      yPosition += 6;
+      doc.text(`Oferta máxima: $${(evaluation.maxOffer || 0).toLocaleString()}`, 20, yPosition);
+      yPosition += 6;
+      doc.text(`Puntuación: ${evaluation.score}/5`, 20, yPosition);
+      yPosition += 6;
+      doc.text(`Ubicación: ${evaluation.location || 'N/A'}`, 20, yPosition);
+      yPosition += 6;
+      doc.text(`Accesibilidad: ${evaluation.accessibility || 'N/A'}`, 20, yPosition);
+      yPosition += 6;
+      doc.text(`Demografía: ${evaluation.demographics || 'N/A'}`, 20, yPosition);
+      yPosition += 6;
+      doc.text(`Inspección: ${evaluation.inspection || 'N/A'}`, 20, yPosition);
+    });
+    
+    // Add footer to all pages
     const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
