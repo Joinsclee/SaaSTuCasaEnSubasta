@@ -103,7 +103,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProperties(filters: PropertyFilters = {}): Promise<Property[]> {
-    let baseQuery = db.select().from(properties);
+    let query = db.select().from(properties);
     const conditions = [];
 
     if (filters.state) {
@@ -150,8 +150,6 @@ export class DatabaseStorage implements IStorage {
       conditions.push(gte(properties.bathrooms, filters.bathrooms.toString()));
     }
 
-    // Apply where conditions
-    let query = baseQuery;
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
     }
@@ -183,7 +181,7 @@ export class DatabaseStorage implements IStorage {
       query = query.offset(filters.offset);
     }
 
-    return await query;
+    return query;
   }
 
   async getProperty(id: number): Promise<Property | undefined> {
