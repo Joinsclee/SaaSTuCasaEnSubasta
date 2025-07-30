@@ -150,7 +150,7 @@ export default function Dashboard() {
   // Save/remove favorite property mutation
   const toggleFavoriteMutation = useMutation({
     mutationFn: async (propertyId: number) => {
-      const response = await apiRequest(`/api/properties/${propertyId}/favorite`, "POST");
+      const response = await apiRequest("POST", `/api/properties/${propertyId}/favorite`);
       return response;
     },
     onSuccess: () => {
