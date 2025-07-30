@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import Header from "@/components/header";
@@ -32,6 +32,16 @@ export default function PropertyDetail() {
   const queryClient = useQueryClient();
 
   const propertyId = params?.id ? parseInt(params.id) : 0;
+
+  // Get selected auction from localStorage to maintain navigation context
+  const [selectedAuction, setSelectedAuction] = useState<any>(null);
+
+  useEffect(() => {
+    const storedAuction = localStorage.getItem('selectedAuction');
+    if (storedAuction) {
+      setSelectedAuction(JSON.parse(storedAuction));
+    }
+  }, []);
 
   const { data: property, isLoading, error } = useQuery<Property & { isSaved: boolean }>({
     queryKey: ["/api/properties", propertyId],
@@ -179,15 +189,32 @@ export default function PropertyDetail() {
       <Header />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Back Button */}
-        <Button
-          variant="ghost"
-          onClick={() => setLocation("/propiedades")}
-          className="mb-6"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Volver a Propiedades
-        </Button>
+        {/* Navigation Buttons */}
+        <div className="flex flex-col gap-2 mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => setLocation("/propiedades")}
+            className="self-start"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver a Propiedades
+          </Button>
+          
+          {selectedAuction && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                // Store the selected auction and navigate back to dashboard
+                localStorage.setItem('selectedAuction', JSON.stringify(selectedAuction));
+                setLocation("/dashboard");
+              }}
+              className="self-start border-primary text-primary hover:bg-primary/10"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Volver a la Lista de la Subasta
+            </Button>
+          )}
+        </div>
 
         {/* Property Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-8">

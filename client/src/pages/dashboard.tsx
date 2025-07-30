@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Header from "@/components/header";
 import DashboardStats from "@/components/dashboard-stats";
@@ -48,6 +48,22 @@ export default function Dashboard() {
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedAuction, setSelectedAuction] = useState<AuctionEvent | null>(null);
+
+  // Check if there's a stored auction on component mount
+  useEffect(() => {
+    const storedAuction = localStorage.getItem('selectedAuction');
+    if (storedAuction) {
+      try {
+        const auction = JSON.parse(storedAuction);
+        setSelectedAuction(auction);
+        // Clear the stored auction after using it
+        localStorage.removeItem('selectedAuction');
+      } catch (error) {
+        console.error('Error parsing stored auction:', error);
+        localStorage.removeItem('selectedAuction');
+      }
+    }
+  }, []);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -175,6 +191,10 @@ export default function Dashboard() {
 
   // Navigation and helper functions
   const handlePropertyClick = (propertyId: number) => {
+    // Store selected auction before navigating so user can return
+    if (selectedAuction) {
+      localStorage.setItem('selectedAuction', JSON.stringify(selectedAuction));
+    }
     setLocation(`/propiedades/${propertyId}`);
   };
 
