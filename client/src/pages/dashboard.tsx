@@ -126,6 +126,12 @@ export default function Dashboard() {
     }
   });
 
+  // Fetch saved properties to check favorite status
+  const { data: savedProperties = [] } = useQuery({
+    queryKey: ["/api/saved-properties"],
+    retry: false,
+  });
+
   // Fetch properties for selected auction
   const { data: auctionProperties = [] } = useQuery<AuctionProperty[]>({
     queryKey: ["/api/auction", selectedAuction?.id, "properties", selectedAuction?.state, selectedAuction?.date],
@@ -156,6 +162,7 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/properties"] });
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/saved-properties"] });
     },
     onError: (error) => {
       toast({
@@ -174,6 +181,11 @@ export default function Dashboard() {
   const handleToggleFavorite = (propertyId: number, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent navigation when clicking heart
     toggleFavoriteMutation.mutate(propertyId);
+  };
+
+  // Check if property is saved
+  const isPropertySaved = (propertyId: number) => {
+    return savedProperties.some((saved: any) => saved.propertyId === propertyId);
   };
 
   // Calendar helper functions
@@ -611,7 +623,11 @@ export default function Dashboard() {
                               onClick={(e) => handleToggleFavorite(property.id, e)}
                               disabled={toggleFavoriteMutation.isPending}
                             >
-                              <Heart className="h-4 w-4 text-red-500 hover:fill-red-500 transition-colors" />
+                              <Heart className={`h-4 w-4 transition-colors ${
+                                isPropertySaved(property.id) 
+                                  ? 'text-red-500 fill-red-500' 
+                                  : 'text-gray-400 hover:text-red-500'
+                              }`} />
                             </Button>
                           </TableCell>
                         </TableRow>

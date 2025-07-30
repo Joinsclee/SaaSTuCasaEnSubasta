@@ -24,7 +24,7 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/propiedades" component={Properties} />
-      <ProtectedRoute path="/propiedad/:id" component={PropertyDetail} />
+      <ProtectedRoute path="/propiedades/:id" component={PropertyDetail} />
       <ProtectedRoute path="/evaluacion" component={PropertyEvaluation} />
       <ProtectedRoute path="/favoritos" component={Favorites} />
       <ProtectedRoute path="/perfil" component={Profile} />

@@ -25,7 +25,7 @@ import {
 import { Property } from "@shared/schema";
 
 export default function PropertyDetail() {
-  const [, params] = useRoute("/propiedad/:id");
+  const [, params] = useRoute("/propiedades/:id");
   const [, setLocation] = useLocation();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { toast } = useToast();
