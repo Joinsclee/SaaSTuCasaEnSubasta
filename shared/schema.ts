@@ -44,6 +44,14 @@ export const properties = pgTable("properties", {
   annualROI: decimal("annual_roi"),
   capRate: decimal("cap_rate"),
   images: json("images").$type<string[]>().default([]),
+  // Enhanced fields for real data sync
+  attomId: text("attom_id").unique(),
+  streetViewUrl: text("street_view_url"),
+  aerialViewUrl: text("aerial_view_url"),
+  dataSource: text("data_source").default("manual"),
+  lastSynced: timestamp("last_synced"),
+  opportunityScore: integer("opportunity_score"),
+  kevinNotes: text("kevin_notes"),
   featured: boolean("featured").default(false),
   status: text("status").notNull().default("active"), // active, sold, cancelled
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -136,3 +144,19 @@ export type InsertSavedProperty = z.infer<typeof insertSavedPropertySchema>;
 export type SavedProperty = typeof savedProperties.$inferSelect;
 export type InsertPropertyEvaluation = z.infer<typeof insertPropertyEvaluationSchema>;
 export type PropertyEvaluation = typeof propertyEvaluations.$inferSelect;
+
+// Sync logs table for monitoring
+export const syncLogs = pgTable("sync_logs", {
+  id: serial("id").primaryKey(),
+  date: timestamp("date").notNull(),
+  type: text("type").notNull(), // 'daily_sync', 'manual_sync', etc.
+  added: integer("added").default(0),
+  updated: integer("updated").default(0),
+  errors: integer("errors").default(0),
+  totalProcessed: integer("total_processed").default(0),
+  duration: integer("duration"), // in seconds
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type SyncLog = typeof syncLogs.$inferSelect;
+export type InsertSyncLog = typeof syncLogs.$inferInsert;

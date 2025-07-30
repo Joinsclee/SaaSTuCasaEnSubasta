@@ -1,4 +1,4 @@
-import { users, properties, savedProperties, propertyEvaluations, type User, type InsertUser, type Property, type InsertProperty, type SavedProperty, type InsertSavedProperty, type PropertyEvaluation, type InsertPropertyEvaluation } from "@shared/schema";
+import { users, properties, savedProperties, propertyEvaluations, syncLogs, type User, type InsertUser, type Property, type InsertProperty, type SavedProperty, type InsertSavedProperty, type PropertyEvaluation, type InsertPropertyEvaluation, type SyncLog, type InsertSyncLog } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, asc, gte, lte, ilike, or, inArray, sql } from "drizzle-orm";
 import session from "express-session";
@@ -38,6 +38,13 @@ export interface IStorage {
   // Additional favorites methods
   getSavedProperty(userId: number, propertyId: number): Promise<SavedProperty | undefined>;
   removeSavedProperty(userId: number, propertyId: number): Promise<void>;
+  
+  // Sync operations for ATTOM Data
+  getPropertyByAttomId(attomId: string): Promise<Property | undefined>;
+  getPropertyByAddress(address: string, city: string, state: string): Promise<Property | undefined>;
+  updateProperty(id: number, property: Partial<Property>): Promise<Property>;
+  logSyncResult(result: InsertSyncLog): Promise<SyncLog>;
+  getRecentSyncLogs(limit?: number): Promise<SyncLog[]>;
   
   sessionStore: any;
 }
@@ -345,6 +352,42 @@ export class DatabaseStorage implements IStorage {
       return savedProperty || undefined;
     }
     return undefined;
+  }
+
+  // Sync operations for ATTOM Data integration
+  async getPropertyByAttomId(attomId: string): Promise<Property | undefined> {
+    const [property] = await db.select().from(properties).where(eq(properties.attomId, attomId));
+    return property || undefined;
+  }
+
+  async getPropertyByAddress(address: string, city: string, state: string): Promise<Property | undefined> {
+    const [property] = await db.select().from(properties)
+      .where(and(
+        eq(properties.address, address),
+        eq(properties.city, city),
+        eq(properties.state, state)
+      ));
+    return property || undefined;
+  }
+
+  async updateProperty(id: number, propertyData: Partial<Property>): Promise<Property> {
+    const [property] = await db.update(properties)
+      .set(propertyData)
+      .where(eq(properties.id, id))
+      .returning();
+    return property;
+  }
+
+  async logSyncResult(result: InsertSyncLog): Promise<SyncLog> {
+    const [syncLog] = await db.insert(syncLogs).values(result).returning();
+    return syncLog;
+  }
+
+  async getRecentSyncLogs(limit: number = 10): Promise<SyncLog[]> {
+    const logs = await db.select().from(syncLogs)
+      .orderBy(desc(syncLogs.createdAt))
+      .limit(limit);
+    return logs;
   }
 }
 

@@ -590,6 +590,65 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Sync endpoints for property data management
+  app.post('/api/admin/sync/trigger', requireAdmin, async (req, res) => {
+    try {
+      console.log('Manual sync triggered by admin');
+      // Import dynamically to avoid circular dependency
+      const { propertyDataSync } = await import('./services/propertyDataSync');
+      const result = await propertyDataSync.performDailySync();
+      
+      res.json({
+        success: true,
+        result,
+        message: `Sincronización completada: ${result.added} agregadas, ${result.updated} actualizadas, ${result.errors} errores`
+      });
+    } catch (error) {
+      console.error('Manual sync failed:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error durante la sincronización',
+        details: error instanceof Error ? error.message : 'Error desconocido'
+      });
+    }
+  });
+
+  app.get('/api/admin/sync/status', requireAdmin, async (req, res) => {
+    try {
+      // Get recent sync logs
+      const recentSyncs = await storage.getRecentSyncLogs(10);
+      
+      res.json({
+        success: true,
+        recentSyncs,
+        nextScheduledSync: 'Próximas 2:00 AM',
+        isScheduledSyncEnabled: true
+      });
+    } catch (error) {
+      console.error('Error getting sync status:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error obteniendo estado de sincronización'
+      });
+    }
+  });
+
+  // Placeholder image endpoint
+  app.get('/api/placeholder-property-image', (req, res) => {
+    // Return a simple SVG placeholder
+    const svg = `
+      <svg width="640" height="400" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="#f3f4f6"/>
+        <text x="50%" y="50%" text-anchor="middle" font-family="Arial" font-size="24" fill="#6b7280">
+          Imagen no disponible
+        </text>
+      </svg>
+    `;
+    
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.send(svg);
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

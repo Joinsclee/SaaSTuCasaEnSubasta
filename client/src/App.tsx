@@ -17,6 +17,7 @@ import Favorites from "@/pages/favorites";
 import Profile from "@/pages/profile";
 import KevinExpertPage from "@/pages/kevin-expert";
 import Foreclosures from "@/pages/foreclosures";
+import AdminSync from "@/pages/admin-sync";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -31,6 +32,7 @@ function Router() {
       <ProtectedRoute path="/perfil" component={Profile} />
       <ProtectedRoute path="/foreclosures" component={Foreclosures} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
+      <ProtectedRoute path="/admin/sync" component={AdminSync} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/kevin" component={KevinExpertPage} />
       <Route component={NotFound} />
