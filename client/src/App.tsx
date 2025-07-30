@@ -16,6 +16,7 @@ import PropertyEvaluation from "@/pages/property-evaluation";
 import Favorites from "@/pages/favorites";
 import Profile from "@/pages/profile";
 import KevinExpertPage from "@/pages/kevin-expert";
+import Foreclosures from "@/pages/foreclosures";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -28,6 +29,7 @@ function Router() {
       <ProtectedRoute path="/evaluacion" component={PropertyEvaluation} />
       <ProtectedRoute path="/favoritos" component={Favorites} />
       <ProtectedRoute path="/perfil" component={Profile} />
+      <ProtectedRoute path="/foreclosures" component={Foreclosures} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/kevin" component={KevinExpertPage} />

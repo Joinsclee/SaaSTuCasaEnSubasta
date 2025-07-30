@@ -5,6 +5,7 @@ import { setupAuth } from "./auth";
 import { requireAdmin, requireAuth } from "./middleware/adminAuth";
 import { z } from "zod";
 import { insertPropertySchema } from "@shared/schema";
+import { attomService } from "./services/attomService";
 
 // Helper function for Kevin's notes based on opportunity score
 function getKevinNotes(opportunityScore: number): string {
@@ -439,7 +440,63 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Auction events route
+  // Real foreclosure data from ATTOM Data
+  app.get("/api/foreclosures", async (req, res, next) => {
+    try {
+      const { state, city, zipCode, page = 1, pageSize = 25 } = req.query;
+      
+      if (!state) {
+        return res.status(400).json({ 
+          message: "Estado es requerido para la búsqueda" 
+        });
+      }
+
+      const foreclosureData = await attomService.getForeclosureProperties({
+        state: state as string,
+        city: city as string,
+        zipCode: zipCode as string,
+        page: parseInt(page as string),
+        pageSize: parseInt(pageSize as string)
+      });
+
+      // Transform ATTOM data to our format
+      const transformedProperties = foreclosureData.property?.map((prop, index) => 
+        attomService.transformToAuctionProperty(prop, index)
+      ) || [];
+
+      res.json({
+        properties: transformedProperties,
+        pagination: {
+          page: foreclosureData.status?.page || 1,
+          pageSize: foreclosureData.status?.pagesize || pageSize,
+          total: foreclosureData.status?.total || transformedProperties.length
+        },
+        source: 'ATTOM Data API'
+      });
+    } catch (error) {
+      console.error('Error fetching foreclosure data:', error);
+      
+      // Provide helpful error message to user
+      let errorMessage = "Error al conectar con ATTOM Data";
+      if (error instanceof Error) {
+        if (error.message.includes('access issue')) {
+          errorMessage = "Tu API key de ATTOM Data necesita verificación. Por favor verifica tu suscripción y permisos.";
+        } else if (error.message.includes('API_KEY')) {
+          errorMessage = "API key de ATTOM Data no válida. Por favor verifica tu configuración.";
+        } else {
+          errorMessage = `Error de ATTOM Data: ${error.message}`;
+        }
+      }
+      
+      res.status(500).json({ 
+        message: errorMessage,
+        details: "Verifica tu API key de ATTOM Data y que tu suscripción incluya acceso a datos de foreclosure.",
+        support: "Contacta soporte de ATTOM Data si el problema persiste."
+      });
+    }
+  });
+
+  // Auction events route (keeping synthetic data for demo/fallback)
   app.get("/api/auction-events", async (req, res, next) => {
     try {
       const state = req.query.state as string;

@@ -39,6 +39,7 @@ export default function Header() {
   const navigation = [
     { href: "/dashboard", label: "Dashboard", active: location === "/dashboard" || location === "/" },
     { href: "/propiedades", label: "Propiedades", active: location === "/propiedades" },
+    { href: "/foreclosures", label: "Datos Reales", active: location === "/foreclosures" },
     { href: "/evaluacion", label: "Evaluación", active: location === "/evaluacion" },
     { href: "/favoritos", label: "Favoritos", active: location === "/favoritos" },
     ...(isAdmin ? [{ href: "/admin", label: "Administración", active: location === "/admin" }] : []),
