@@ -104,6 +104,14 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
+### Funcionalidad de Descarga de Evaluaciones (January 30, 2025)
+- **Descarga CSV**: Exportación de evaluaciones en formato CSV con todos los campos
+- **Descarga PDF**: Reporte profesional con estadísticas y resumen ejecutivo
+- **Botones en Historial**: Acceso directo desde la sección de evaluaciones
+- **Datos Completos**: Incluye fecha, dirección, precios, puntuación y criterios de evaluación
+- **Estadísticas PDF**: Puntuación promedio, propiedades aprobadas e inversión total planeada
+- **Formato Profesional**: PDF con branding de Tu Casa en Subasta y paginación
+
 ### Sistema de Sincronización de Datos ATTOM (January 30, 2025)
 - **Arquitectura Interna**: Sistema de sincronización implementado dentro de la aplicación
 - **Sincronización Automática**: Proceso diario a las 2:00 AM para actualizar propiedades

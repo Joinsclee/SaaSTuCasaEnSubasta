@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { CheckCircle, XCircle, Star, Info, Home, AlertCircle, FileText, DollarSign, MapPin, Users, Search, Trash2, X } from 'lucide-react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { CheckCircle, XCircle, Star, Info, Home, AlertCircle, FileText, DollarSign, MapPin, Users, Search, Trash2, X, Download } from 'lucide-react';
 import Header from '@/components/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -95,6 +97,153 @@ export default function PropertyEvaluationPage() {
       });
     },
   });
+
+  // Function to download evaluations as CSV
+  const downloadEvaluationsCSV = () => {
+    if (!evaluations.length) return;
+    
+    // Create CSV headers
+    const headers = [
+      'Fecha',
+      'Dirección',
+      'Precio de Subasta',
+      'Oferta Máxima',
+      'Puntuación',
+      'Ubicación',
+      'Accesibilidad',
+      'Demografía',
+      'Inspección',
+      'Propietario Coincide',
+      'Préstamos Claros',
+      'Es Casa Unifamiliar'
+    ];
+    
+    // Convert evaluations to CSV rows
+    const csvRows = evaluations.map(evaluation => [
+      new Date(evaluation.createdAt).toLocaleDateString('es-ES'),
+      `"${evaluation.address}"`,
+      evaluation.price || 0,
+      evaluation.maxOffer || 0,
+      evaluation.score,
+      evaluation.location || '',
+      evaluation.accessibility || '',
+      evaluation.demographics || '',
+      evaluation.inspection || '',
+      evaluation.ownerMatch ? 'Sí' : evaluation.ownerMatch === false ? 'No' : 'N/A',
+      evaluation.loansMatch ? 'Sí' : evaluation.loansMatch === false ? 'No' : 'N/A',
+      evaluation.isHouse ? 'Sí' : evaluation.isHouse === false ? 'No' : 'N/A'
+    ]);
+    
+    // Create CSV content
+    const csvContent = [
+      headers.join(','),
+      ...csvRows.map(row => row.join(','))
+    ].join('\n');
+    
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `evaluaciones_propiedades_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Descarga completada",
+      description: `Se han descargado ${evaluations.length} evaluaciones en formato CSV.`,
+    });
+  };
+
+  // Function to download evaluations as PDF
+  const downloadEvaluationsPDF = () => {
+    if (!evaluations.length) return;
+    
+    const doc = new jsPDF();
+    const currentDate = new Date().toLocaleDateString('es-ES');
+    
+    // Title
+    doc.setFontSize(20);
+    doc.setTextColor(255, 136, 39); // Orange color
+    doc.text('Tu Casa en Subasta', 14, 20);
+    
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Reporte de Evaluaciones de Propiedades', 14, 30);
+    
+    // User info and date
+    doc.setFontSize(12);
+    doc.text(`Usuario: ${user?.username || 'Usuario'}`, 14, 40);
+    doc.text(`Fecha: ${currentDate}`, 14, 48);
+    doc.text(`Total de evaluaciones: ${evaluations.length}`, 14, 56);
+    
+    // Create table data
+    const tableData = evaluations.map(evaluation => [
+      new Date(evaluation.createdAt).toLocaleDateString('es-ES'),
+      evaluation.address,
+      `$${(evaluation.price || 0).toLocaleString()}`,
+      `$${(evaluation.maxOffer || 0).toLocaleString()}`,
+      `${evaluation.score}/5`,
+      evaluation.location || 'N/A',
+      evaluation.accessibility || 'N/A',
+      evaluation.demographics || 'N/A',
+      evaluation.inspection || 'N/A'
+    ]);
+    
+    // Add table
+    (doc as any).autoTable({
+      startY: 65,
+      head: [['Fecha', 'Dirección', 'Precio Subasta', 'Oferta Máx.', 'Puntuación', 'Ubicación', 'Acceso', 'Demografía', 'Inspección']],
+      body: tableData,
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [255, 136, 39], textColor: 255 }, // Orange header
+      columnStyles: {
+        0: { cellWidth: 18 },
+        1: { cellWidth: 35 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 20 },
+        4: { cellWidth: 15 },
+        5: { cellWidth: 20 },
+        6: { cellWidth: 15 },
+        7: { cellWidth: 20 },
+        8: { cellWidth: 20 }
+      },
+      margin: { left: 14, right: 14 }
+    });
+    
+    // Add summary statistics
+    const finalY = (doc as any).lastAutoTable.finalY + 15;
+    doc.setFontSize(14);
+    doc.text('Resumen Estadístico:', 14, finalY);
+    
+    const avgScore = evaluations.reduce((sum, e) => sum + e.score, 0) / evaluations.length;
+    const totalInvestment = evaluations.reduce((sum, e) => sum + (e.maxOffer || 0), 0);
+    const approved = evaluations.filter(e => e.score >= 3).length;
+    
+    doc.setFontSize(11);
+    doc.text(`• Puntuación promedio: ${avgScore.toFixed(1)}/5`, 14, finalY + 10);
+    doc.text(`• Propiedades aprobadas: ${approved} de ${evaluations.length} (${((approved/evaluations.length)*100).toFixed(1)}%)`, 14, finalY + 18);
+    doc.text(`• Inversión total planeada: $${totalInvestment.toLocaleString()}`, 14, finalY + 26);
+    
+    // Add footer
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(128, 128, 128);
+      doc.text(`Página ${i} de ${pageCount} - Generado por Tu Casa en Subasta`, 14, doc.internal.pageSize.height - 10);
+    }
+    
+    // Save the PDF
+    doc.save(`evaluaciones_propiedades_${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    toast({
+      title: "PDF generado",
+      description: `Se ha descargado el reporte PDF con ${evaluations.length} evaluaciones.`,
+    });
+  };
 
   const calculateScore = () => {
     let score = 0;
@@ -718,8 +867,28 @@ export default function PropertyEvaluationPage() {
             {/* Evaluation History */}
             {!isLoading && evaluations.length > 0 && (
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg">Historial de Evaluaciones</CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={downloadEvaluationsCSV}
+                      className="text-xs"
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      CSV
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={downloadEvaluationsPDF}
+                      className="text-xs"
+                    >
+                      <FileText className="h-4 w-4 mr-1" />
+                      PDF
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
