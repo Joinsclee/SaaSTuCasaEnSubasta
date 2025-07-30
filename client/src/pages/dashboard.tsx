@@ -132,10 +132,11 @@ export default function Dashboard() {
     queryFn: async () => {
       if (!selectedAuction) return [];
       
-      const params = new URLSearchParams({
-        state: selectedAuction.state,
-        date: selectedAuction.date
-      });
+      const params = new URLSearchParams();
+      if (selectedAuction.state) {
+        params.append('state', selectedAuction.state);
+      }
+      params.append('date', selectedAuction.date);
       
       const response = await fetch(`/api/auction/${selectedAuction.id}/properties?${params}`);
       if (!response.ok) {

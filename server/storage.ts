@@ -325,33 +325,24 @@ export class DatabaseStorage implements IStorage {
       ));
   }
 
-  // Saved properties (favorites) methods
-  async saveProperty(userId: number, propertyId: number): Promise<SavedProperty> {
-    const [savedProperty] = await db
-      .insert(savedProperties)
-      .values({ userId, propertyId })
-      .returning();
-    return savedProperty;
-  }
-
+  // Additional favorites methods (aliases for existing methods)
   async removeSavedProperty(userId: number, propertyId: number): Promise<void> {
-    await db
-      .delete(savedProperties)
-      .where(and(
-        eq(savedProperties.userId, userId),
-        eq(savedProperties.propertyId, propertyId)
-      ));
+    return this.unsaveProperty(userId, propertyId);
   }
 
   async getSavedProperty(userId: number, propertyId: number): Promise<SavedProperty | undefined> {
-    const [savedProperty] = await db
-      .select()
-      .from(savedProperties)
-      .where(and(
-        eq(savedProperties.userId, userId),
-        eq(savedProperties.propertyId, propertyId)
-      ));
-    return savedProperty || undefined;
+    const isSaved = await this.isPropertySaved(userId, propertyId);
+    if (isSaved) {
+      const [savedProperty] = await db
+        .select()
+        .from(savedProperties)
+        .where(and(
+          eq(savedProperties.userId, userId),
+          eq(savedProperties.propertyId, propertyId)
+        ));
+      return savedProperty || undefined;
+    }
+    return undefined;
   }
 }
 
