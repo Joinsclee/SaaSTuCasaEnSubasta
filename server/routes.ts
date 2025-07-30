@@ -505,7 +505,32 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-
+  // Toggle property favorite status
+  app.post("/api/properties/:id/favorite", requireAuth, async (req, res, next) => {
+    try {
+      const propertyId = parseInt(req.params.id);
+      const userId = req.user!.id;
+      
+      if (isNaN(propertyId)) {
+        return res.status(400).json({ message: "ID de propiedad inválido" });
+      }
+      
+      // Check if property exists in favorites
+      const existingFavorite = await storage.getSavedProperty(userId, propertyId);
+      
+      if (existingFavorite) {
+        // Remove from favorites
+        await storage.removeSavedProperty(userId, propertyId);
+        res.json({ message: "Propiedad removida de favoritos", isFavorite: false });
+      } else {
+        // Add to favorites
+        await storage.saveProperty(userId, propertyId);
+        res.json({ message: "Propiedad agregada a favoritos", isFavorite: true });
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

@@ -35,6 +35,10 @@ export interface IStorage {
   updatePropertyEvaluation(id: number, evaluation: Partial<InsertPropertyEvaluation>): Promise<PropertyEvaluation | undefined>;
   deletePropertyEvaluation(id: number, userId: number): Promise<void>;
   
+  // Additional favorites methods
+  getSavedProperty(userId: number, propertyId: number): Promise<SavedProperty | undefined>;
+  removeSavedProperty(userId: number, propertyId: number): Promise<void>;
+  
   sessionStore: any;
 }
 
@@ -319,6 +323,35 @@ export class DatabaseStorage implements IStorage {
         eq(propertyEvaluations.id, id),
         eq(propertyEvaluations.userId, userId)
       ));
+  }
+
+  // Saved properties (favorites) methods
+  async saveProperty(userId: number, propertyId: number): Promise<SavedProperty> {
+    const [savedProperty] = await db
+      .insert(savedProperties)
+      .values({ userId, propertyId })
+      .returning();
+    return savedProperty;
+  }
+
+  async removeSavedProperty(userId: number, propertyId: number): Promise<void> {
+    await db
+      .delete(savedProperties)
+      .where(and(
+        eq(savedProperties.userId, userId),
+        eq(savedProperties.propertyId, propertyId)
+      ));
+  }
+
+  async getSavedProperty(userId: number, propertyId: number): Promise<SavedProperty | undefined> {
+    const [savedProperty] = await db
+      .select()
+      .from(savedProperties)
+      .where(and(
+        eq(savedProperties.userId, userId),
+        eq(savedProperties.propertyId, propertyId)
+      ));
+    return savedProperty || undefined;
   }
 }
 

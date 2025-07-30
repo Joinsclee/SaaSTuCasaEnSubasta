@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Header from "@/components/header";
 import DashboardStats from "@/components/dashboard-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin, Star, ArrowLeft, Home, DollarSign } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin, Star, ArrowLeft, Home, DollarSign, Heart } from "lucide-react";
 import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 interface AuctionEvent {
   id: number;
@@ -46,6 +48,8 @@ export default function Dashboard() {
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedAuction, setSelectedAuction] = useState<AuctionEvent | null>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Lista de estados con imágenes reales
   const states = [
@@ -141,6 +145,35 @@ export default function Dashboard() {
     },
     enabled: !!selectedAuction
   });
+
+  // Save/remove favorite property mutation
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: async (propertyId: number) => {
+      const response = await apiRequest(`/api/properties/${propertyId}/favorite`, "POST");
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/properties"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo actualizar los favoritos",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Navigation and helper functions
+  const handlePropertyClick = (propertyId: number) => {
+    setLocation(`/propiedades/${propertyId}`);
+  };
+
+  const handleToggleFavorite = (propertyId: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation when clicking heart
+    toggleFavoriteMutation.mutate(propertyId);
+  };
 
   // Calendar helper functions
   const getDaysInMonth = (date: Date) => {
@@ -512,12 +545,17 @@ export default function Dashboard() {
                         <TableHead>Valor Est.</TableHead>
                         <TableHead>Descuento</TableHead>
                         <TableHead>Oportunidad</TableHead>
+                        <TableHead>Favoritos</TableHead>
                         <TableHead>Notas de Kevin</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {auctionProperties.map((property) => (
-                        <TableRow key={property.id} className="hover:bg-gray-50">
+                        <TableRow 
+                          key={property.id} 
+                          className="hover:bg-gray-50 cursor-pointer" 
+                          onClick={() => handlePropertyClick(property.id)}
+                        >
                           <TableCell className="font-medium">
                             <div>
                               <div className="font-semibold text-sm">{property.address}</div>
@@ -564,6 +602,17 @@ export default function Dashboard() {
                           </TableCell>
                           <TableCell>
                             {renderStars(property.opportunityScore)}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="p-2 h-8 w-8"
+                              onClick={(e) => handleToggleFavorite(property.id, e)}
+                              disabled={toggleFavoriteMutation.isPending}
+                            >
+                              <Heart className="h-4 w-4 text-red-500 hover:fill-red-500 transition-colors" />
+                            </Button>
                           </TableCell>
                           <TableCell className="max-w-48">
                             <div className="text-xs text-gray-600 truncate" title={property.kevinNotes}>

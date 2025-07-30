@@ -104,6 +104,15 @@ The architecture emphasizes type safety, performance, and scalability while main
 
 ## Recent Changes
 
+### Sistema de Favoritos y Navegación en Tabla de Subastas (January 30, 2025)
+- **Favoritos Integrados**: Botón de corazón en cada fila de la tabla para guardar propiedades favoritas
+- **Navegación Directa**: Click en filas de propiedades navega a página de detalles `/propiedades/:id`
+- **Prevención de Conflictos**: Click en corazón no activa navegación (stopPropagation)
+- **Feedback Visual**: Estados de carga y confirmación para acciones de favoritos
+- **API de Favoritos**: Endpoint `/api/properties/:id/favorite` para toggle de favoritos
+- **Invalidación de Cache**: Actualización automática de estadísticas y listados
+- **UX Mejorada**: Efectos hover y cursor pointer para indicar interactividad
+
 ### Tabla de Propiedades por Subasta y Mejoras UX (July 29, 2025)
 - **Tabla Interactiva**: Implementada tabla completa de propiedades cuando se selecciona una subasta
 - **API de Propiedades**: Nueva ruta `/api/auction/:eventId/properties` con datos determinísticos por subasta
