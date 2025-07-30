@@ -115,7 +115,7 @@ export default function PropertyEvaluationPage() {
       'Propietario Coincide',
       'Préstamos Claros',
       'Es Casa Unifamiliar',
-      'Puntuación' // Moved to the end
+      'Puntuación ⭐' // Moved to the end with star emoji to highlight
     ];
     
     // Convert evaluations to Excel rows with puntuación at the end
@@ -131,68 +131,73 @@ export default function PropertyEvaluationPage() {
       evaluation.ownerMatch ? 'Sí' : evaluation.ownerMatch === false ? 'No' : 'N/A',
       evaluation.loansMatch ? 'Sí' : evaluation.loansMatch === false ? 'No' : 'N/A',
       evaluation.isHouse ? 'Sí' : evaluation.isHouse === false ? 'No' : 'N/A',
-      evaluation.score // Puntuación at the end
+      `${evaluation.score}/5 ⭐` // Puntuación at the end with visual formatting
     ]);
     
-    // Create worksheet
+    // Create worksheet with proper structure
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...excelData]);
     
-    // Set column widths
+    // Set column widths for better readability
     const columnWidths = [
       { wch: 12 }, // Fecha
-      { wch: 30 }, // Dirección
-      { wch: 15 }, // Precio de Subasta
+      { wch: 35 }, // Dirección
+      { wch: 18 }, // Precio de Subasta
       { wch: 15 }, // Oferta Máxima
-      { wch: 12 }, // Ubicación
-      { wch: 15 }, // Accesibilidad
-      { wch: 12 }, // Demografía
-      { wch: 12 }, // Inspección
-      { wch: 18 }, // Propietario Coincide
-      { wch: 15 }, // Préstamos Claros
-      { wch: 18 }, // Es Casa Unifamiliar
-      { wch: 12 }  // Puntuación
+      { wch: 15 }, // Ubicación
+      { wch: 18 }, // Accesibilidad
+      { wch: 15 }, // Demografía
+      { wch: 15 }, // Inspección
+      { wch: 20 }, // Propietario Coincide
+      { wch: 18 }, // Préstamos Claros
+      { wch: 20 }, // Es Casa Unifamiliar
+      { wch: 18 }  // Puntuación - wider for the star
     ];
     worksheet['!cols'] = columnWidths;
     
-    // Apply green background to the puntuación column (column L, index 11)
+    // Create a more compatible approach for highlighting
+    // We'll make the puntuación column data more visually distinctive
     const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
-    for (let row = 0; row <= range.e.r; row++) {
-      const cellAddress = XLSX.utils.encode_cell({ r: row, c: 11 }); // Column L (Puntuación)
-      if (!worksheet[cellAddress]) continue;
-      
-      worksheet[cellAddress].s = {
-        fill: {
-          fgColor: { rgb: "C8E6C9" } // Light green color
-        },
-        font: {
-          bold: row === 0 // Bold for header
-        },
-        alignment: {
-          horizontal: "center"
-        }
-      };
-    }
     
-    // Apply bold formatting to headers
+    // Style the header row
     for (let col = 0; col <= range.e.c; col++) {
       const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
-      if (!worksheet[cellAddress]) continue;
-      
-      if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
-      worksheet[cellAddress].s.font = { bold: true };
-      worksheet[cellAddress].s.fill = { fgColor: { rgb: col === 11 ? "C8E6C9" : "F5F5F5" } };
+      if (worksheet[cellAddress]) {
+        // Make all headers bold and add special formatting to puntuación column
+        worksheet[cellAddress].s = {
+          font: { 
+            bold: true,
+            color: col === 11 ? { rgb: "2E7D32" } : { rgb: "000000" } // Green text for puntuación header
+          },
+          alignment: { horizontal: "center" }
+        };
+      }
     }
     
-    // Create workbook
+    // Add formatting note as a comment in the first cell
+    if (!worksheet['A1'].c) worksheet['A1'].c = [];
+    worksheet['A1'].c.push({
+      a: "Sistema",
+      t: "La columna 'Puntuación ⭐' está destacada con formato especial y ubicada al final para fácil identificación.",
+      r: '<r><rPr><sz val="11"/><color theme="1"/><rFont val="Calibri"/><family val="2"/><scheme val="minor"/></rPr><t>La columna \'Puntuación ⭐\' está destacada con formato especial y ubicada al final para fácil identificación.</t></r>'
+    });
+    
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Evaluaciones');
     
-    // Download file
+    // Add workbook properties
+    workbook.Props = {
+      Title: "Evaluaciones de Propiedades - Tu Casa en Subasta",
+      Subject: "Reporte de evaluaciones",
+      Author: user?.username || "Usuario",
+      CreatedDate: new Date()
+    };
+    
+    // Download the file
     XLSX.writeFile(workbook, `evaluaciones_propiedades_${new Date().toISOString().split('T')[0]}.xlsx`);
     
     toast({
-      title: "Descarga completada",
-      description: `Se han descargado ${evaluations.length} evaluaciones en formato Excel con formato destacado.`,
+      title: "Excel descargado",
+      description: `Archivo Excel con ${evaluations.length} evaluaciones. La columna Puntuación ⭐ está al final destacada.`,
     });
   };
 
