@@ -465,22 +465,14 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ message: "ID de evento inválido" });
       }
       
-      // Generate properties for this specific auction event
-      let properties = await storage.getProperties({
-        state: state || undefined,
+      // Get properties specifically for the auction's state
+      // Each auction is tied to a specific state, so we only show properties from that state
+      const properties = await storage.getProperties({
+        state: state || 'FL', // Default to FL if no state specified
         sortBy: 'discount',
         sortOrder: 'desc',
         limit: 50
       });
-
-      // If no properties found, get all properties without state filter
-      if (properties.length === 0) {
-        properties = await storage.getProperties({
-          sortBy: 'discount',
-          sortOrder: 'desc',
-          limit: 50
-        });
-      }
       
       // Create deterministic seed for consistent properties per auction
       const seed = eventId * 1000 + new Date(date || '2025-07-29').getTime();
@@ -496,7 +488,7 @@ export function registerRoutes(app: Express): Server {
         estimatedValue: property.marketValue || property.originalPrice,
         bidIncrement: 1000,
         openingBid: Math.floor(Number(property.auctionPrice) * (0.7 + seededRandom(seed, index + 300) * 0.2)),
-        kevinNotes: getKevinNotes(Math.floor(seededRandom(seed, index + 100) * 5) + 1)
+        // Remove kevinNotes from auction properties as requested
       }));
       
       res.json(auctionProperties);

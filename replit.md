@@ -112,6 +112,8 @@ The architecture emphasizes type safety, performance, and scalability while main
 - **API de Favoritos**: Endpoint `/api/properties/:id/favorite` para toggle de favoritos
 - **Invalidación de Cache**: Actualización automática de estadísticas y listados
 - **UX Mejorada**: Efectos hover y cursor pointer para indicar interactividad
+- **Filtrado por Estado**: Propiedades mostradas solo para el estado específico de la subasta seleccionada
+- **Tabla Simplificada**: Removidas las notas de Kevin de la tabla para mejor legibilidad
 
 ### Tabla de Propiedades por Subasta y Mejoras UX (July 29, 2025)
 - **Tabla Interactiva**: Implementada tabla completa de propiedades cuando se selecciona una subasta

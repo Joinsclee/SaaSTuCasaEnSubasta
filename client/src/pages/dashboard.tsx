@@ -546,7 +546,6 @@ export default function Dashboard() {
                         <TableHead>Descuento</TableHead>
                         <TableHead>Oportunidad</TableHead>
                         <TableHead>Favoritos</TableHead>
-                        <TableHead>Notas de Kevin</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -613,11 +612,6 @@ export default function Dashboard() {
                             >
                               <Heart className="h-4 w-4 text-red-500 hover:fill-red-500 transition-colors" />
                             </Button>
-                          </TableCell>
-                          <TableCell className="max-w-48">
-                            <div className="text-xs text-gray-600 truncate" title={property.kevinNotes}>
-                              {property.kevinNotes}
-                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
